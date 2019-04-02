@@ -1,11 +1,10 @@
-const createError = require('http-errors');
+//const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require("mongoose");
-const routers = require('./routes/api');
-require("dotenv").config();
+const drugRouter = require('./routes/drug');
 
 const app = express();
 
@@ -15,14 +14,15 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "client", "build")));
 
-const url = "mongodb://localhost:27017/EHR";
-mongoose
-    .connect(
-        url,
-        {useNewUrlParser: true}
-    )
-    .then(() => console.log(`Database connected successfully`))
-    .catch(err => console.log(err));
+const options = {keepAlive: 300000, connectTimeoutMS: 30000, useNewUrlParser: true};
+const mongodbUri = 'mongodb+srv://admin:admin@ehr-roxao.mongodb.net/ehr?retryWrites=true';
+mongoose.connect(mongodbUri, options);
+const conn = mongoose.connection;
+conn.on('error', console.error.bind(console, 'connection error:'));
+conn.once('open', function () {
+    console.log('connected to database');
+    // Wait for the database connection to establish, then start the app.
+});
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use('/api', routers);
+app.use('/api/drug', drugRouter);
 app.use("*", (req, res, next) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });

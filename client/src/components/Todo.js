@@ -15,8 +15,9 @@ class Todo extends Component {
     }
 
     getTodos = () => {
-        axios.get('/api/todos')
+        axios.get('/api/tn.esprit.ehr.Patient')
             .then(res => {
+                console.log(res.data);
                 if (res.data) {
                     this.setState({
                         todos: res.data
