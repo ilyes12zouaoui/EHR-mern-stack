@@ -1,4 +1,4 @@
-const {Drug} = require('../models/drug');
+const {Drug} = require('../models/drug.model');
 
 module.exports.getDrugs = (req, res, next) => {
     Drug.find({})

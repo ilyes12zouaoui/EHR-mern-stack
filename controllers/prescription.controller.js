@@ -1,8 +1,10 @@
-const {Prescription} = require('../models/prescription');
+const {Prescription} = require('../models/prescription.model');
 
 module.exports.getPrescriptions = (req, res, next) => {
     Prescription.find({})
-        .populate('drugs','name')
+        .populate('drugs', 'name')
+        .populate('patient', 'name')
+        .populate('doctor', 'name')
         .then(data => res.json(data))
         .catch((err) => {
             console.log(err);
@@ -13,6 +15,8 @@ module.exports.addPrescription = (req, res, next) => {
     let prescription = new Prescription();
     prescription.date = req.body.date;
     prescription.drugs = req.body.drugs;
+    prescription.doctor = req.body.doctor;
+    prescription.patient = req.body.patient;
 
     prescription.save((err, data) => {
         if (err) {

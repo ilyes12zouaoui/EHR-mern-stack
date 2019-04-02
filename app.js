@@ -6,8 +6,11 @@ const logger = require('morgan');
 const mongoose = require("mongoose");
 
 //RoutersFile
-const drugRouter = require('./routes/drug');
-const prescriptionRouter = require('./routes/prescription');
+const drugRouter = require('./routes/drug.router');
+const prescriptionRouter = require('./routes/prescription.router');
+const patientRouter = require('./routes/patient.router');
+const doctorRouter = require('./routes/doctor.router');
+const allergyRouter = require('./routes/allergy.router');
 
 const app = express();
 
@@ -39,6 +42,9 @@ app.use((req, res, next) => {
 //Routers
 app.use('/api/drug', drugRouter);
 app.use('/api/prescription', prescriptionRouter);
+app.use('/api/doctor', doctorRouter);
+app.use('/api/patient', patientRouter);
+app.use('/api/allergy', allergyRouter);
 
 app.use("*", (req, res, next) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
