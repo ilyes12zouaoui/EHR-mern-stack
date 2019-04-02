@@ -19,6 +19,4 @@ const drugSchema = new mongoose.Schema({
     }
 });
 
-const drug =
-
-    module.exports.drug = mongoose.model('drug', drugSchema);
+module.exports.Drug = mongoose.model('drug', drugSchema);

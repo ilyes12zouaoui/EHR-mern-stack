@@ -4,7 +4,10 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require("mongoose");
+
+//RoutersFile
 const drugRouter = require('./routes/drug');
+const prescriptionRouter = require('./routes/prescription');
 
 const app = express();
 
@@ -33,8 +36,10 @@ app.use((req, res, next) => {
     next();
 });
 
-
+//Routers
 app.use('/api/drug', drugRouter);
+app.use('/api/prescription', prescriptionRouter);
+
 app.use("*", (req, res, next) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
