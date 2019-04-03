@@ -9,7 +9,9 @@ to install dependencies run this two commands:
 npm install
 
 cd client
+
 npm install
+
 -----
 
 to activate the project run in two different terminals
