@@ -8,8 +8,8 @@ to install dependencies run this two commands:
 
 npm install
 
-npm run client-install
-
+cd client
+npm install
 -----
 
 to activate the project run in two different terminals
