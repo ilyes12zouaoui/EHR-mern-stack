@@ -6,7 +6,7 @@ var request_accessmodel = require('../models/request_access');
 var accessmodel = require('../models/access');
 
 /* GET patients listing. */
-router.get('/patients', function(req, res, next) {
+router.get('/', function(req, res, next) {
 
     patientmodel.find({})
         .then((data)=>{

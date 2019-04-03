@@ -3,8 +3,8 @@ module.exports = {
   SALT_VALUE: 10,
   CONNEXTION_STRING: "mongodb+srv://admin:admin@ehr-roxao.mongodb.net/ehr?retryWrites=true",
   GMAIL_CONFIGURATIONS: {
-    EMAIL_ADRESSE: "yourGmail@gmail.com",
-    EMAIL_PASSWORD: "yourPasswotd",
+    EMAIL_ADRESSE: "esprit.ehr@gmail.com",
+    EMAIL_PASSWORD: "Azerty0+",
     EMAIL_SERVICE: "gmail"
   },
   EMAIL_TEMPLETES: {

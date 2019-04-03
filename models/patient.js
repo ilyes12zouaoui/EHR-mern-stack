@@ -3,27 +3,12 @@ var mongoose = require('mongoose');
 
 const patientSchema = mongoose.Schema({
 
-    firstName: {
-        type: String,
-        required: true
-    },
-
-    lastName: {
-        type: String,
-        required: true
-    },
-
     birthDate: {
         type: Date,
         required: true
     },
 
-    email: {
-        type: String,
-        required: true
-    },
-
-    password: {
+    country: {
         type: String,
         required: true
     },
@@ -33,29 +18,49 @@ const patientSchema = mongoose.Schema({
         required: true
     },
 
-    telNum: {
-        type: Number,
-        required: true
-    },
-
-    country: {
-        type: String,
-        required: true
-    },
-
     address: {
         type: String,
         required: true
     },
 
-    activated: {
-        type: Boolean,
-        //required: true
+    telNum: {
+        type: Number,
+        required: true
     },
 
-    sex: {
+    gender: {
         type: String,
         required: true
+    },
+
+    cin: {
+        type: String,
+        required: true
+    },
+
+    blood_type: {
+        type: String,
+        required: true
+    },
+
+    height: {
+        type: String,
+        required: true
+    },
+
+    weight: {
+        type: String,
+        required: true
+    },
+
+    physical_activity: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'physical_activityModel'
+    },
+
+    nutrition: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'nutritionModel'
     },
 
     isLoggedIn: {
@@ -63,27 +68,29 @@ const patientSchema = mongoose.Schema({
         //required: true
     },
 
-    doctorsAllowed: {
+    doctors: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'doctor'
-    },
+    }],
 
-    pharmacistsAllowed: {
+    doctorsAllowed: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'doctor'
+    }],
+
+    pharmacistsAllowed: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'pharmacist'
-    },
+    }],
 
-    thirdPartiesAllowed: {
+    thirdPartiesAllowed: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'thirdPartie'
-    },
+    }],
 
-    personnelHealthInformations: {
-        type: String,
-        //required: true
-    }
+
 });
 
-var patient = mongoose.model('patient',patientSchema)
+var patient = mongoose.model('patient', patientSchema);
 
 module.exports = patient;
