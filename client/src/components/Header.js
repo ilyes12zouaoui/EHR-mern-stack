@@ -33,7 +33,7 @@ class Header extends Component {
                       textShadow: "0 1px 1px #fff"
                     }}
                   >
-                    healthChaine
+                    healthChain
                     </h1></NavLink>
                 </div>
               </div>

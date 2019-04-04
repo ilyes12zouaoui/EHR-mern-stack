@@ -29,8 +29,8 @@ class DoctorSpacePage extends Component {
 
                 <div className="row">
                     <div className="col-xl-3 col-lg-3 patientDetails box_general_3">
-                <span style={{marginLeft: "25%"}}>
-                    <img src="http://via.placeholder.com/565x565.jpg" alt="" width="150" height="150"
+                <span>
+                    <img src="images/patient.jpg" alt="" width="150" height="150"
                          className="img-thumbnail"/>
                 </span><br/><br/>
                         <div className="form-group">
