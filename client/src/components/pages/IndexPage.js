@@ -30,8 +30,7 @@ class IndexPage extends Component {
             <div class="content">
               <h3>Find a Doctor!</h3>
               <p>
-                Ridiculus sociosqu cursus neque cursus curae ante scelerisque
-                vehicula.
+
               </p>
               <form method="post" action="list.html">
                 <div id="custom-search-input">

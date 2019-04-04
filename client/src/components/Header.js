@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
+import ListUsers from "./pages/ListUsers";
 
 class Header extends Component {
   constructor(props) {
@@ -20,7 +21,11 @@ class Header extends Component {
             <div class="row">
               <div class="col-lg-3 col-6">
                 <div id="logo_home">
-                  <h1
+                    <NavLink
+                        to="/"
+                        activeClassName="active-link"
+                        exact={true}
+                    ><h1
                     style={{
                       color: "#3f4079",
                       fontSize: "36px",
@@ -29,7 +34,7 @@ class Header extends Component {
                     }}
                   >
                     healthChaine
-                  </h1>
+                    </h1></NavLink>
                 </div>
               </div>
               <nav class="col-lg-9 col-6">
@@ -84,11 +89,11 @@ class Header extends Component {
                     </li>
                     <li>
                       <NavLink
-                          to="/PatientSpace"
+                          to="/ListUsers"
                           activeClassName="active-link"
                           exact={true}
                       >
-                        Patient Space
+                          Patient Space
                       </NavLink>
                     </li>
                     {this.props.isAuthenticated && (
@@ -125,6 +130,15 @@ class Header extends Component {
                               change picture
                             </NavLink>
                           </li>
+                            <li>
+                                <NavLink
+                                    to="/personalinformation"
+                                    activeClassName="active-link"
+                                    exact={true}
+                                >
+                                    Personal information
+                                </NavLink>
+                            </li>
                           <li>
                             <NavLink
                               onClick={this.props.logoutMethod}
