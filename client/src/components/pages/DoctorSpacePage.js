@@ -28,6 +28,13 @@ class DoctorSpacePage extends Component {
     render() {
         let {patient} = this.state;
 
+        function _calculateAge(birthday) {
+            // birthday is a date
+            let ageDifMs = Date.now() - birthday.getTime();
+            let ageDate = new Date(ageDifMs); // miliseconds from epoch
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        }
+
         return (
             <div className="margin_60" style={{paddingLeft: "80px", paddingRight: "80px"}}>
                 <div className="row">
@@ -38,7 +45,7 @@ class DoctorSpacePage extends Component {
                         <p>
                             <b>Name : </b>{patient.firstName + ' ' + patient.lastName}  &emsp;&emsp;
                             <b>Day of birth : </b> {moment(patient.birthDate).format('YYYY-MM-DD')} &emsp;&emsp;
-                            <b>Age : </b> 26 &emsp;&emsp;
+                            <b>Age : </b> {_calculateAge(new Date(patient.birthDate))} &emsp;&emsp;
                             <b>Allergies : </b> Penicilin &emsp;&emsp;
                             <b>Address : </b> El Ghazala &emsp;&emsp;
                             <b>NHS : </b> 214 856 7201 &emsp;&emsp;
