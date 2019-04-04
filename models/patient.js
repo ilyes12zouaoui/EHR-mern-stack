@@ -44,23 +44,23 @@ const patientSchema = mongoose.Schema({
     },
 
     height: {
-        type: Number,
+        type: String,
         required: true
     },
 
     weight: {
-        type: Number,
+        type: String,
         required: true
     },
 
     physical_activity: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'physical_activity'
+        ref: 'physical_activityModel'
     },
 
     nutrition: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'nutrition'
+        ref: 'nutritionModel'
     },
 
     isLoggedIn: {
@@ -91,6 +91,6 @@ const patientSchema = mongoose.Schema({
 
 });
 
-var patient = mongoose.model('patient',patientSchema)
+var patient = mongoose.model('patient', patientSchema);
 
 module.exports = patient;

@@ -49,7 +49,7 @@ class SignUpPage extends Component {
       <div class="bg_color_2">
         <div class="container margin_60_35">
           <div id="register">
-            <h1>Please register to our website!</h1>
+            <h1>Please register to Findoctor!</h1>
             <div class="row justify-content-center">
               <div class="col-md-5">
                 <form onSubmit={this.onFormSubmit}>

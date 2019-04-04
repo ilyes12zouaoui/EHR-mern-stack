@@ -1,40 +1,13 @@
 import React, {Component} from "react";
 import "../assets/css/doctorSpacePage.css";
-import axios from "axios";
-import moment from "moment"
 
 class DoctorSpacePage extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            patient: {}
-        };
-    }
-
-    componentDidMount() {
-        axios
-            .get('api/patient/getUserByfirstName?firstName=Haythem')
-            .then(response => {
-                this.setState({patient: response.data[0]});
-                console.log(this.state.patient);
-            })
-            .catch(error => {
-                const {errors} = error.response.data;
-                console.log(errors);
-                this.setState({errors: errors});
-            });
+        this.state = {};
     }
 
     render() {
-        let {patient} = this.state;
-
-        function _calculateAge(birthday) {
-            // birthday is a date
-            let ageDifMs = Date.now() - birthday.getTime();
-            let ageDate = new Date(ageDifMs); // miliseconds from epoch
-            return Math.abs(ageDate.getUTCFullYear() - 1970);
-        }
-
         return (
             <div className="margin_60" style={{paddingLeft: "80px", paddingRight: "80px"}}>
                 <div className="row">
@@ -43,9 +16,9 @@ class DoctorSpacePage extends Component {
                             <h3>Patient details</h3>
                         </div>
                         <p>
-                            <b>Name : </b>{patient.firstName + ' ' + patient.lastName}  &emsp;&emsp;
-                            <b>Day of birth : </b> {moment(patient.birthDate).format('YYYY-MM-DD')} &emsp;&emsp;
-                            <b>Age : </b> {_calculateAge(new Date(patient.birthDate))} &emsp;&emsp;
+                            <b>Name : </b> Haythem Bel Haj Youssef &emsp;&emsp;
+                            <b>Day of birth : </b> 27/06/1993 &emsp;&emsp;
+                            <b>Age : </b> 26 &emsp;&emsp;
                             <b>Allergies : </b> Penicilin &emsp;&emsp;
                             <b>Address : </b> El Ghazala &emsp;&emsp;
                             <b>NHS : </b> 214 856 7201 &emsp;&emsp;
@@ -56,7 +29,7 @@ class DoctorSpacePage extends Component {
 
                 <div className="row">
                     <div className="col-xl-3 col-lg-3 patientDetails box_general_3">
-                <span>
+                <span style={{marginLeft: "25%"}}>
                     <img src="http://via.placeholder.com/565x565.jpg" alt="" width="150" height="150"
                          className="img-thumbnail"/>
                 </span><br/><br/>
