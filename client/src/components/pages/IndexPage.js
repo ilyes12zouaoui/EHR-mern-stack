@@ -28,53 +28,13 @@ class IndexPage extends Component {
         <div class="header-video">
           <div id="hero_video">
             <div class="content">
-              <h3>Find a Doctor!</h3>
+              <h3>Welcome to our website <br/>healChain ! </h3><br/>
               <p>
-                Ridiculus sociosqu cursus neque cursus curae ante scelerisque
-                vehicula.
+                  You can access to your medical record, share it with<br/>
+                  health care providers, and give them permission<br/> to add
+                  new data.
               </p>
-              <form method="post" action="list.html">
-                <div id="custom-search-input">
-                  <div class="input-group">
-                    <input
-                      type="text"
-                      class=" search-query"
-                      placeholder="Ex. Name, Specialization ...."
-                    />
-                    <input type="submit" class="btn_search" value="Search" />
-                  </div>
-                  <ul>
-                    <li>
-                      <input
-                        type="radio"
-                        id="all"
-                        name="radio_search"
-                        value="all"
-                        checked
-                      />
-                      <label for="all">All</label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        id="doctor"
-                        name="radio_search"
-                        value="doctor"
-                      />
-                      <label for="doctor">Doctor</label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        id="clinic"
-                        name="radio_search"
-                        value="clinic"
-                      />
-                      <label for="clinic">Clinic</label>
-                    </li>
-                  </ul>
-                </div>
-              </form>
+
             </div>
           </div>
           <img
