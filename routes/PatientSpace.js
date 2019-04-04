@@ -21,6 +21,7 @@ router.get('/', function (req, res, next) {
         })
 });
 
+
 //************** Add physical_activity*************
 router.post('/add_physical_activity', function (req, res) {
 
@@ -80,8 +81,10 @@ router.put('/update_nutrition/:id', (req, res) => {
 
 
 
+
 //************** Add Patient*************
 router.put('/add/:id', function (req, res) {
+
 
 
     usermodel.findByIdAndUpdate(
@@ -193,6 +196,7 @@ router.post('/add_access', function (req, res) {
 
 //************** cancel access*************
 router.put('/cancel_access/:id', (req, res) => {
+
     let access = {};
     let query = {"_id": req.params.id}; // req.params.id t7ot il valuer milfou9 fil path bi slach /id
     access.State = false;// req.body.State t7ot il valuer fil postamn fil body bi json
@@ -210,6 +214,7 @@ router.put('/cancel_access/:id', (req, res) => {
 
 
 //**************Find user by firstName or companyName *************
+
 
 
 router.get('/getUserByfirstName', (req, res) => {
@@ -313,7 +318,7 @@ router.get('/body_mass_index/:id', (req, res) => {
             return res.send("Your body is Morbid or massive obesity");
         }
 
-    })
+
 
 });
 
@@ -331,5 +336,6 @@ router.get('/getuserById/:id', (req, res) => {
     })
 });
 
+});
 
 module.exports = router;

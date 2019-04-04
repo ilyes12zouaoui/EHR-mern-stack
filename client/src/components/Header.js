@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
-import ListUsers from "./pages/ListUsers";
 
 class Header extends Component {
   constructor(props) {
@@ -21,11 +20,7 @@ class Header extends Component {
             <div class="row">
               <div class="col-lg-3 col-6">
                 <div id="logo_home">
-                    <NavLink
-                        to="/"
-                        activeClassName="active-link"
-                        exact={true}
-                    ><h1
+                  <h1
                     style={{
                       color: "#3f4079",
                       fontSize: "36px",
@@ -33,8 +28,8 @@ class Header extends Component {
                       textShadow: "0 1px 1px #fff"
                     }}
                   >
-                    healthChain
-                    </h1></NavLink>
+                    healthChaine
+                  </h1>
                 </div>
               </div>
               <nav class="col-lg-9 col-6">
@@ -89,11 +84,11 @@ class Header extends Component {
                     </li>
                     <li>
                       <NavLink
-                          to="/ListUsers"
+                          to="/PatientSpace"
                           activeClassName="active-link"
                           exact={true}
                       >
-                          Patient Space
+                        Patient Space
                       </NavLink>
                     </li>
                     {this.props.isAuthenticated && (

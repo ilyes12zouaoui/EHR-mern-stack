@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {BrowserRouter, Route, NavLink, Switch} from "react-router-dom";
+import React, { Component } from "react";
+import { BrowserRouter, Route, NavLink, Switch } from "react-router-dom";
 import axios from "axios";
 
 import ProtectedRoute from "./commun/ProtectedRoute";
@@ -13,63 +13,53 @@ import AccountActivationPage from "./pages/AccountActivationPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileUpdateImage from "./pages/ProfileUpdateImage";
 import DoctorSpacePage from "./pages/DoctorSpacePage";
-import ListUsers from "./pages/ListUsers";
-import Personalinformation from "./pages/Personalinformation";
-import Userdetails from "./pages/Userdetails";
 
 function checkIfUserConnectedAndReturnUser() {
-    let user = {
-        isAuthenticated: false,
-        role: "",
-        user: {}
+  let user = {
+    isAuthenticated: false,
+    role: "",
+    user: {}
+  };
+
+  if (localStorage.Authorization && localStorage.user) {
+    user = {
+      isAuthenticated: true,
+      role: JSON.parse(localStorage.user).role,
+      user: JSON.parse(localStorage.user)
     };
+    axios.defaults.headers.common["Authorization"] = localStorage.Authorization;
+  }
 
-    if (localStorage.Authorization && localStorage.user) {
-        user = {
-            isAuthenticated: true,
-            role: JSON.parse(localStorage.user).role,
-            user: JSON.parse(localStorage.user)
-        };
-        axios.defaults.headers.common["Authorization"] = localStorage.Authorization;
-    }
-
-    return user;
+  return user;
 }
 
 class AppRouter extends Component {
-    constructor(props) {
-        super(props);
-        this.state = checkIfUserConnectedAndReturnUser();
+  constructor(props) {
+    super(props);
+    this.state = checkIfUserConnectedAndReturnUser();
 
-        this.loginMethod = this.loginMethod.bind(this);
-        this.logoutMethod = this.logoutMethod.bind(this);
-        this.updateUserAfterImageChangeMethod = this.updateUserAfterImageChangeMethod.bind(
-            this
-        );
-    }
+    this.loginMethod = this.loginMethod.bind(this);
+    this.logoutMethod = this.logoutMethod.bind(this);
+    this.updateUserAfterImageChangeMethod = this.updateUserAfterImageChangeMethod.bind(
+      this
+    );
+  }
 
-    loginMethod(role, user, token) {
-        localStorage.setItem("Authorization", `JWT ${token}`);
-        localStorage.setItem("user", JSON.stringify(user));
-        axios.defaults.headers.common["Authorization"] = `JWT ${token}`;
-        this.setState({role, user, isAuthenticated: true});
-    }
+  loginMethod(role, user, token) {
+    localStorage.setItem("Authorization", `JWT ${token}`);
+    localStorage.setItem("user", JSON.stringify(user));
+    axios.defaults.headers.common["Authorization"] = `JWT ${token}`;
+    this.setState({ role, user, isAuthenticated: true });
+  }
 
-    updateUserAfterImageChangeMethod(imageName) {
-        if (localStorage.user) {
-            let user = JSON.parse(localStorage.user);
-            user.image = imageName;
-            localStorage.setItem("user", JSON.stringify(user));
-            this.setState({user});
-        }
-    }
+  updateUserAfterImageChangeMethod(imageName) {
+    if (localStorage.user) {
+      let user = JSON.parse(localStorage.user);
+      user.image = imageName;
 
-    logoutMethod() {
-        delete axios.defaults.headers.common["Authorization"];
-        localStorage.removeItem("Authorization");
-        localStorage.removeItem("user");
-        this.setState({role: "", user: {}, isAuthenticated: false});
+      this.setState({ user });
     }
+  }
 
     render() {
         return (
@@ -97,29 +87,29 @@ class AppRouter extends Component {
 
                         <Route exact path="/userdetails" component={Userdetails}/>
 
-                        <ProtectedRoute
-                            isAuthenticated={this.state.isAuthenticated}
-                            path="/profile"
-                            exact={true}
-                            component={() => <ProfilePage user={this.state.user}/>}
-                        />
-                        <ProtectedRoute
-                            isAuthenticated={this.state.isAuthenticated}
-                            path="/ProfileUpdateImage"
-                            component={() => (
-                                <ProfileUpdateImage
-                                    updateUserAfterImageChangeMethod={
-                                        this.updateUserAfterImageChangeMethod
-                                    }
-                                    user={this.state.user}
-                                />
-                            )}
-                        />
-                        <Route
-                            path="/accountActivation/:id"
-                            component={AccountActivationPage}
-                        />
-                        {/* <ProtectedRoute
+            <ProtectedRoute
+              isAuthenticated={this.state.isAuthenticated}
+              path="/profile"
+              exact={true}
+              component={() => <ProfilePage user={this.state.user} />}
+            />
+            <ProtectedRoute
+              isAuthenticated={this.state.isAuthenticated}
+              path="/ProfileUpdateImage"
+              component={() => (
+                <ProfileUpdateImage
+                  updateUserAfterImageChangeMethod={
+                    this.updateUserAfterImageChangeMethod
+                  }
+                  user={this.state.user}
+                />
+              )}
+            />
+            <Route
+              path="/accountActivation/:id"
+              component={AccountActivationPage}
+            />
+            {/* <ProtectedRoute
               isAuthenticated={this.state.isAuthenticated}
               path="/profile"
               component={() => <Profile user={this.state.user} />}
@@ -136,13 +126,13 @@ class AppRouter extends Component {
               )}
             />
             <Route component={NotFoundPage} />*/}
-                        <Route component={NotFoundPage}/>
-                    </Switch>
-                </main>
-                <Footer/>
-            </BrowserRouter>
-        );
-    }
+            <Route component={NotFoundPage} />
+          </Switch>
+        </main>
+        <Footer />
+      </BrowserRouter>
+    );
+  }
 }
 
 export default AppRouter;
