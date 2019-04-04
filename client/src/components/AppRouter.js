@@ -12,6 +12,7 @@ import SignUpPage from "./pages/SignUpPage";
 import AccountActivationPage from "./pages/AccountActivationPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileUpdateImage from "./pages/ProfileUpdateImage";
+import DoctorSpacePage from "./pages/DoctorSpacePage";
 
 function checkIfUserConnectedAndReturnUser() {
   let user = {
@@ -85,6 +86,7 @@ class AppRouter extends Component {
               )}
             />
             <Route exact path="/signUp" component={SignUpPage} />
+            <Route exact path="/DoctorSpace" component={DoctorSpacePage} />
 
             <ProtectedRoute
               isAuthenticated={this.state.isAuthenticated}
@@ -123,7 +125,7 @@ class AppRouter extends Component {
                   }
                 />
               )}
-            /> 
+            />
             <Route component={NotFoundPage} />*/}
             <Route component={NotFoundPage} />
           </Switch>

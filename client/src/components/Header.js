@@ -66,11 +66,29 @@ class Header extends Component {
                   <ul>
                     <li>
                       <NavLink
-                        to="/"
-                        activeClassName="active-link"
-                        exact={true}
+                          to="/"
+                          activeClassName="active-link"
+                          exact={true}
                       >
                         Home
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                          to="/DoctorSpace"
+                          activeClassName="active-link"
+                          exact={true}
+                      >
+                        Doctor Space
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                          to="/PatientSpace"
+                          activeClassName="active-link"
+                          exact={true}
+                      >
+                        Patient Space
                       </NavLink>
                     </li>
                     {this.props.isAuthenticated && (
