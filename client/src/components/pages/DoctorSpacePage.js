@@ -59,10 +59,8 @@ class DoctorSpacePage extends Component {
 
                 <div className="row">
                     <div className="col-xl-3 col-lg-3 patientDetails box_general_3">
-
                 <span>
                     <img src={"images/" + patient.image} alt="" width="150" height="150"
-
                          className="img-thumbnail"/>
                 </span><br/><br/>
                         <div className="form-group">
