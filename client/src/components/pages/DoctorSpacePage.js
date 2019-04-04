@@ -1,13 +1,33 @@
 import React, {Component} from "react";
 import "../assets/css/doctorSpacePage.css";
+import axios from "axios";
+import moment from "moment"
 
 class DoctorSpacePage extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            patient: {}
+        };
+    }
+
+    componentDidMount() {
+        axios
+            .get('api/patient/getUserByfirstName?firstName=Haythem')
+            .then(response => {
+                this.setState({patient: response.data[0]});
+                console.log(this.state.patient);
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                console.log(errors);
+                this.setState({errors: errors});
+            });
     }
 
     render() {
+        let {patient} = this.state;
+
         return (
             <div className="margin_60" style={{paddingLeft: "80px", paddingRight: "80px"}}>
                 <div className="row">
@@ -16,8 +36,8 @@ class DoctorSpacePage extends Component {
                             <h3>Patient details</h3>
                         </div>
                         <p>
-                            <b>Name : </b> Haythem Bel Haj Youssef &emsp;&emsp;
-                            <b>Day of birth : </b> 27/06/1993 &emsp;&emsp;
+                            <b>Name : </b>{patient.firstName + ' ' + patient.lastName}  &emsp;&emsp;
+                            <b>Day of birth : </b> {moment(patient.birthDate).format('YYYY-MM-DD')} &emsp;&emsp;
                             <b>Age : </b> 26 &emsp;&emsp;
                             <b>Allergies : </b> Penicilin &emsp;&emsp;
                             <b>Address : </b> El Ghazala &emsp;&emsp;
@@ -29,7 +49,7 @@ class DoctorSpacePage extends Component {
 
                 <div className="row">
                     <div className="col-xl-3 col-lg-3 patientDetails box_general_3">
-                <span style={{marginLeft: "25%"}}>
+                <span>
                     <img src="http://via.placeholder.com/565x565.jpg" alt="" width="150" height="150"
                          className="img-thumbnail"/>
                 </span><br/><br/>
