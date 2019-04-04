@@ -1,13 +1,41 @@
 import React, {Component} from "react";
 import "../assets/css/doctorSpacePage.css";
+import axios from "axios";
+import moment from "moment"
 
 class DoctorSpacePage extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            patient: {}
+        };
+    }
+
+    componentDidMount() {
+        axios
+            .get('api/patient?id=5ca64b274f9ea339a8502b2a')
+            .then(response => {
+                this.setState({patient: response.data[0]});
+                console.log(this.state.patient);
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                console.log(errors);
+                this.setState({errors: errors});
+            });
     }
 
     render() {
+        let {patient} = this.state;
+
+        function _calculateAge(birthday) {
+            // birthday is a date
+            let ageDifMs = Date.now() - birthday.getTime();
+            let ageDate = new Date(ageDifMs); // miliseconds from epoch
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        }
+
+        console.log('allergy' + patient.allergies);
         return (
             <div className="margin_60" style={{paddingLeft: "80px", paddingRight: "80px"}}>
                 <div className="row">
@@ -16,13 +44,15 @@ class DoctorSpacePage extends Component {
                             <h3>Patient details</h3>
                         </div>
                         <p>
-                            <b>Name : </b> Haythem Bel Haj Youssef &emsp;&emsp;
-                            <b>Day of birth : </b> 27/06/1993 &emsp;&emsp;
-                            <b>Age : </b> 26 &emsp;&emsp;
-                            <b>Allergies : </b> Penicilin &emsp;&emsp;
+                            <b>Name : </b>{patient.firstName + ' ' + patient.lastName}  &emsp;&emsp;
+                            <b>Day of birth : </b> {moment(patient.birthDate).format('YYYY-MM-DD')} &emsp;&emsp;
+                            <b>Age : </b> {_calculateAge(new Date(patient.birthDate))} &emsp;&emsp;
+                            <b>Allergies : </b> {patient.allergies} &emsp;&emsp;
                             <b>Address : </b> El Ghazala &emsp;&emsp;
                             <b>NHS : </b> 214 856 7201 &emsp;&emsp;
-                            <b>Live consultation : </b><i id="video-call" className="icon-videocam"></i>
+                            <b>Live consultation : </b>
+                            <i id="video-call" className="icon-videocam">
+                            </i>
                         </p>
                     </div>
                 </div>
@@ -30,12 +60,14 @@ class DoctorSpacePage extends Component {
                 <div className="row">
                     <div className="col-xl-3 col-lg-3 patientDetails box_general_3">
                 <span>
-                    <img src="images/patient.jpg" alt="" width="150" height="150"
+                    <img src={"images/" + patient.image} alt="" width="150" height="150"
                          className="img-thumbnail"/>
                 </span><br/><br/>
                         <div className="form-group">
                             <textarea className="form-control rounded-0" rows="10"
-                                      placeholder="Your message ..."></textarea>
+                                      placeholder="Your message ...">
+
+                            </textarea>
                         </div>
                         <div className="form-group float-right">
                             <button className="btn btn-success">Send</button>

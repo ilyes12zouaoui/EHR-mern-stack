@@ -92,7 +92,9 @@ class AppRouter extends Component {
                         <Route exact path="/signUp" component={SignUpPage}/>
                         <Route exact path="/DoctorSpace" component={DoctorSpacePage}/>
                         <Route exact path="/ListUsers" component={ListUsers}/>
-                        <Route exact path="/personalinformation" component={Personalinformation}/>
+                        <Route exact path="/personalinformation"
+                               component={() => <Personalinformation user={this.state.user}/>}/>
+
                         <Route exact path="/userdetails" component={Userdetails}/>
 
                         <ProtectedRoute

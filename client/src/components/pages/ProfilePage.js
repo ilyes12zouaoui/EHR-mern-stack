@@ -52,7 +52,7 @@ class ProfilePage extends Component {
                         <li>
                           <h6>Sexe</h6>{" "}
                           <a href="#">
-                            {this.props.user.sexe ? "male" : "female"}
+                            {this.props.user.sexe ? "female" : "male"}
                           </a>
                         </li>
                       </ul>

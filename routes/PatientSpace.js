@@ -1,12 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var patientmodel = require('../models/patient');
 var usermodel = require('../models/UserModel');
 var physical_activitymodel = require('../models/physical_activity');
 var nutritionmodel = require('../models/nutrition');
-
-
 var request_accessmodel = require('../models/request_access');
 var accessmodel = require('../models/access');
 
@@ -37,6 +34,22 @@ router.post('/add_physical_activity', function (req, res) {
 
 });
 
+//************** Update physical_activity*************
+router.put('/update_physical_activity/:id', (req, res) => {
+
+
+    physical_activitymodel.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {new: true},
+        (err, physical) => {
+            if (err) return res.status(500).send(err);
+            return res.send(physical);
+        }
+    )
+});
+
+
 //************** Add nutrition*************
 router.post('/add_nutrition', function (req, res) {
 
@@ -49,6 +62,23 @@ router.post('/add_nutrition', function (req, res) {
     nutrition.save().then(nutrition => res.json(nutrition));
 
 });
+
+//************** Update nutrition*************
+router.put('/update_nutrition/:id', (req, res) => {
+
+
+    nutritionmodel.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {new: true},
+        (err, nutrition) => {
+            if (err) return res.status(500).send(err);
+            return res.send(nutrition);
+        }
+    )
+});
+
+
 
 //************** Add Patient*************
 router.put('/add/:id', function (req, res) {
@@ -81,6 +111,7 @@ router.get('/toupdate/:id', (req, res) => {
     })
 });
 
+//************** Update Patient*************
 router.put('/update/:id', (req, res) => {
 
 
@@ -190,19 +221,16 @@ router.get('/getUserByfirstName', (req, res) => {
                 firstName: {$regex: req.query.name, $options: 'i'} // hethi fazet like fil sql %LIKE%
             }, {
                 lastName: {$regex: req.query.name, $options: 'i'}
-            }],
-            $and: [{
-                role: { $not: {  "" }}
             }]
         }
     }
     if (req.query.country) {
         query = {
-            country: {$eq: req.query.country}
+            country: {$regex: req.query.country, $options: 'i'}
         }
     }
 
-    usermodel.find(query)
+    usermodel.find(query && {"role": {$ne: "Patient"}})
         .then(data => res.json(data))
         .catch((err) => {
             console.log(err);
@@ -287,6 +315,20 @@ router.get('/body_mass_index/:id', (req, res) => {
 
     })
 
+});
+
+//************** Get uer by ID *************
+router.get('/getuserById/:id', (req, res) => {
+    let query = {"_id": req.params.id};
+    usermodel.findById(query, (err, data) => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            res.status(200);
+            res.json(data);
+        }
+    })
 });
 
 

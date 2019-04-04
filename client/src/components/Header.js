@@ -136,6 +136,7 @@ class Header extends Component {
                                     activeClassName="active-link"
                                     exact={true}
                                 >
+
                                     Personal information
                                 </NavLink>
                             </li>

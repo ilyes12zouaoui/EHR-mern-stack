@@ -1,6 +1,34 @@
 import React, {Component} from 'react';
+import axios from "axios";
 
 class Personalinformation extends Component {
+    /*constructor(props) {
+        super(props);
+        this.state = {
+            user: {}
+        };
+    }
+
+    componentDidMount() {
+        axios
+            .get('api/patient?id=5ca64b274f9ea339a8502b2a')
+            .then(response => {
+                this.setState({patient: response.data[0]});
+                console.log(this.state.patient);
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                console.log(errors);
+                this.setState({errors: errors});
+            });
+    }*/
+
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+
     render() {
         return (
             <div id="hero_register">
@@ -38,13 +66,13 @@ class Personalinformation extends Component {
                                         <div className="col-md-6 ">
                                             <div className="form-group">
                                                 <input type="text" className="form-control" placeholder="Name"
-                                                       name="name_register" id="name_register"/>
+                                                       name="name_register" id="name_register" value={this.props.user.firstName}/>
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
                                                 <input type="text" className="form-control" placeholder="Last Name"
-                                                       name="lastname_register" id="lastname_register"/>
+                                                       name="lastname_register" id="lastname_register" value={this.props.user.lastName}/>
                                             </div>
                                         </div>
                                     </div>
@@ -52,7 +80,7 @@ class Personalinformation extends Component {
                                         <div className="col-lg-12">
                                             <div className="form-group">
                                                 <input type="text" className="form-control" placeholder="birthDate"
-                                                       name="specialization" id="specialization"/>
+                                                       name="specialization" id="specialization" value={this.props.user.birthDate}/>
                                             </div>
                                         </div>
                                     </div>
