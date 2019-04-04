@@ -1,8 +1,9 @@
 module.exports = {
   JWT_SECRET: "your secret pls!",
   SALT_VALUE: 10,
-  ONNEXTION_STRING:
+  CONNEXTION_STRING:
     "mongodb+srv://admin:admin@ehr-roxao.mongodb.net/ehr?retryWrites=true",
+
   GMAIL_CONFIGURATIONS: {
     EMAIL_ADRESSE: "esprit.ehr@gmail.com",
     EMAIL_PASSWORD: "Azerty0+",
