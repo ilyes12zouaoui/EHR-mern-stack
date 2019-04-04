@@ -4,6 +4,7 @@ const ROLES = require("../configurations/Roles");
 const { EMAIL_TEMPLETES } = require("../configurations/Secrets");
 const sendEmail = require("../helpers/email/SendEmail");
 const crypto = require("crypto");
+const { deleteFileFromPublicImages } = require("../helpers/DeleteFiles");
 
 const signInController = async (req, res) => {
   const user = await UserModel.findOne({ email: req.body.email }).exec();
@@ -41,7 +42,8 @@ const signInController = async (req, res) => {
       phoneNumber: user.phoneNumber,
       role: user.role,
       email: user.email,
-      sexe: user.sexe
+      sexe: user.sexe,
+      image: user.image
     }
   });
 };
@@ -128,9 +130,35 @@ const accountActivationController = async (req, res) => {
   });
 };
 
+const changeProfileImage = async (req, res) => {
+  const oldImagePath = req.user.image;
+  req.user.image = req.file.filename;
+
+  if (oldImagePath == "defaultProfilePicture.jpg") {
+    await req.user.save();
+    return res.send({
+      success: {
+        global: "profile picture was updated successfuly",
+        imageName: req.file.filename
+      }
+    });
+  } else {
+    deleteFileFromPublicImages(oldImagePath, async err => {
+      await req.user.save();
+      return res.send({
+        success: {
+          global: "profile picture was updated successfuly",
+          imageName: req.file.filename
+        }
+      });
+    });
+  }
+};
+
 module.exports = {
   signInController,
   signUpController,
   accountActivationController,
-  sendAccountActivationEmailController
+  sendAccountActivationEmailController,
+  changeProfileImage
 };

@@ -13,6 +13,7 @@ const passportJwtOptions = {
 passport.use(
   "jwt",
   new JwtStrategy(passportJwtOptions, async function(jwt_payload, done) {
+    console.log(jwt_payload);
     const user = await UserModel.findOne({
       _id: jwt_payload.id
     }).exec();
