@@ -13,6 +13,7 @@ class DoctorSpacePage extends Component {
 
     componentDidMount() {
         axios
+
             .get('api/patient/byid?id=5ca669748fe074320cb5330c')
             .then(response => {
                 this.setState({patient: response.data});
@@ -35,7 +36,7 @@ class DoctorSpacePage extends Component {
             return Math.abs(ageDate.getUTCFullYear() - 1970);
         }
 
-        console.log('allergy' + patient);
+        console.log('allergy' + patient.allergies);
         return (
             <div className="margin_60" style={{paddingLeft: "80px", paddingRight: "80px"}}>
                 <div className="row">

@@ -1,12 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var patientmodel = require('../models/patient');
 var usermodel = require('../models/UserModel');
 var physical_activitymodel = require('../models/physical_activity');
 var nutritionmodel = require('../models/nutrition');
-
-
 var request_accessmodel = require('../models/request_access');
 var accessmodel = require('../models/access');
 
@@ -26,13 +23,11 @@ router.get('/', function (req, res, next) {
 
 /* GET patients listing. */
 router.get('/byid', function (req, res, next) {
-    console.log('eee' + req.query.id);
-    usermodel.findOne({_id: req.query.id})
-        .populate('allergy', 'name')
+
+    usermodel.findOne({_id : req.query.id})
         .then((data) => {
             res.status(200);
             res.json(data);
-
         })
         .catch((err) => {
             res.json(err);
@@ -52,6 +47,22 @@ router.post('/add_physical_activity', function (req, res) {
 
 });
 
+//************** Update physical_activity*************
+router.put('/update_physical_activity/:id', (req, res) => {
+
+
+    physical_activitymodel.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {new: true},
+        (err, physical) => {
+            if (err) return res.status(500).send(err);
+            return res.send(physical);
+        }
+    )
+});
+
+
 //************** Add nutrition*************
 router.post('/add_nutrition', function (req, res) {
 
@@ -64,6 +75,23 @@ router.post('/add_nutrition', function (req, res) {
     nutrition.save().then(nutrition => res.json(nutrition));
 
 });
+
+//************** Update nutrition*************
+router.put('/update_nutrition/:id', (req, res) => {
+
+
+    nutritionmodel.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {new: true},
+        (err, nutrition) => {
+            if (err) return res.status(500).send(err);
+            return res.send(nutrition);
+        }
+    )
+});
+
+
 
 //************** Add Patient*************
 router.put('/add/:id', function (req, res) {
@@ -96,6 +124,7 @@ router.get('/toupdate/:id', (req, res) => {
     })
 });
 
+//************** Update Patient*************
 router.put('/update/:id', (req, res) => {
 
 
@@ -193,7 +222,7 @@ router.put('/cancel_access/:id', (req, res) => {
 });
 
 
-//**************Find user by firstName or companyName ***********
+//**************Find user by firstName or companyName *************
 
 
 router.get('/getUserByfirstName', (req, res) => {
@@ -210,11 +239,11 @@ router.get('/getUserByfirstName', (req, res) => {
     }
     if (req.query.country) {
         query = {
-            country: {$eq: req.query.country}
+            country: {$regex: req.query.country, $options: 'i'}
         }
     }
 
-    usermodel.find(query && {role: "Doctor"} || {role: "SIMPLE_USER"})
+    usermodel.find(query && {"role": {$ne: "Patient"}})
         .then(data => res.json(data))
         .catch((err) => {
             console.log(err);
@@ -253,7 +282,7 @@ router.get('/access', function (req, res, next) {
 });
 
 
-//************** body mass index ***********
+//************** body mass index *************
 router.get('/body_mass_index/:id', (req, res) => {
     let patient = {};
     let query = {"_id": req.params.id}; // req.params.id t7ot il valuer milfou9 fil path bi slach /id
@@ -299,6 +328,20 @@ router.get('/body_mass_index/:id', (req, res) => {
 
     })
 
+});
+
+//************** Get uer by ID *************
+router.get('/getuserById/:id', (req, res) => {
+    let query = {"_id": req.params.id};
+    usermodel.findById(query, (err, data) => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            res.status(200);
+            res.json(data);
+        }
+    })
 });
 
 

@@ -5,12 +5,12 @@ const accessSchema = mongoose.Schema({
 
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'doctor' || 'pharmacist' || 'thirdPartie'
+        ref: 'doctor' || 'pharmacist' || 'thirdPartie' || 'User'
     },
 
     patient: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'patient'
+        ref: 'patient' || 'User'
     },
 
     State: {

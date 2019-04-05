@@ -30,10 +30,6 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    sexe: {
-        type: Boolean,
-        required: true
-    },
     isActive: {
         type: Boolean,
         default: false
