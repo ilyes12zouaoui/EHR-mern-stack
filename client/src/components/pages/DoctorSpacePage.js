@@ -13,9 +13,9 @@ class DoctorSpacePage extends Component {
 
     componentDidMount() {
         axios
-            .get('api/patient/getUserByfirstName?firstName=Haythem')
+            .get('api/patient/byid?id=5ca669748fe074320cb5330c')
             .then(response => {
-                this.setState({patient: response.data[0]});
+                this.setState({patient: response.data});
                 console.log(this.state.patient);
             })
             .catch(error => {
@@ -35,6 +35,7 @@ class DoctorSpacePage extends Component {
             return Math.abs(ageDate.getUTCFullYear() - 1970);
         }
 
+        console.log('allergy' + patient);
         return (
             <div className="margin_60" style={{paddingLeft: "80px", paddingRight: "80px"}}>
                 <div className="row">
@@ -46,10 +47,12 @@ class DoctorSpacePage extends Component {
                             <b>Name : </b>{patient.firstName + ' ' + patient.lastName}  &emsp;&emsp;
                             <b>Day of birth : </b> {moment(patient.birthDate).format('YYYY-MM-DD')} &emsp;&emsp;
                             <b>Age : </b> {_calculateAge(new Date(patient.birthDate))} &emsp;&emsp;
-                            <b>Allergies : </b> Penicilin &emsp;&emsp;
+                            <b>Allergies : </b> {patient.allergies} &emsp;&emsp;
                             <b>Address : </b> El Ghazala &emsp;&emsp;
                             <b>NHS : </b> 214 856 7201 &emsp;&emsp;
-                            <b>Live consultation : </b><i id="video-call" className="icon-videocam"></i>
+                            <b>Live consultation : </b>
+                            <i id="video-call" className="icon-videocam">
+                            </i>
                         </p>
                     </div>
                 </div>
@@ -57,12 +60,14 @@ class DoctorSpacePage extends Component {
                 <div className="row">
                     <div className="col-xl-3 col-lg-3 patientDetails box_general_3">
                 <span>
-                    <img src="http://via.placeholder.com/565x565.jpg" alt="" width="150" height="150"
+                    <img src={"images/" + patient.image} alt="" width="150" height="150"
                          className="img-thumbnail"/>
                 </span><br/><br/>
                         <div className="form-group">
                             <textarea className="form-control rounded-0" rows="10"
-                                      placeholder="Your message ..."></textarea>
+                                      placeholder="Your message ...">
+
+                            </textarea>
                         </div>
                         <div className="form-group float-right">
                             <button className="btn btn-success">Send</button>

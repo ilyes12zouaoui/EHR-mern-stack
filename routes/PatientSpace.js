@@ -2,29 +2,45 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var patientmodel = require('../models/patient');
+var usermodel = require('../models/UserModel');
 var physical_activitymodel = require('../models/physical_activity');
 var nutritionmodel = require('../models/nutrition');
 
-var patientmodel = require('../models/patient');
+
 var request_accessmodel = require('../models/request_access');
 var accessmodel = require('../models/access');
 
 /* GET patients listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
 
-    patientmodel.find({})
-        .then((data)=>{
+    usermodel.find({role: "Patient"})
+        .then((data) => {
             res.status(200);
             res.json(data);
 
         })
-        .catch((err)=>{
+        .catch((err) => {
+            res.json(err);
+        })
+});
+
+/* GET patients listing. */
+router.get('/byid', function (req, res, next) {
+    console.log('eee' + req.query.id);
+    usermodel.findOne({_id: req.query.id})
+        .populate('allergy', 'name')
+        .then((data) => {
+            res.status(200);
+            res.json(data);
+
+        })
+        .catch((err) => {
             res.json(err);
         })
 });
 
 //************** Add physical_activity*************
-router.post('/add_physical_activity',function (req,res) {
+router.post('/add_physical_activity', function (req, res) {
 
     let physical_activity = new physical_activitymodel();
 
@@ -37,7 +53,7 @@ router.post('/add_physical_activity',function (req,res) {
 });
 
 //************** Add nutrition*************
-router.post('/add_nutrition',function (req,res) {
+router.post('/add_nutrition', function (req, res) {
 
     let nutrition = new nutritionmodel();
 
@@ -50,24 +66,10 @@ router.post('/add_nutrition',function (req,res) {
 });
 
 //************** Add Patient*************
-router.put('/add/:id',function (req,res) {
+router.put('/add/:id', function (req, res) {
 
-    /*    let patient = new patientmodel();
 
-        patient.birthDate = req.body.birthDate; // "birthDate" fil postman fil body mta3 l'ajout
-        patient.country = req.body.country;
-        patient.city = req.body.city;
-        patient.address = req.body.address;
-        patient.telNum = req.body.telNum;
-        patient.gender = req.body.gender;
-        patient.cin = req.body.cin;
-        patient.blood_type = req.body.blood_type;
-        patient.height = req.body.height;
-        patient.weight = req.body.weight;
-        patient.physical_activity = req.body.physical_activity_id;
-        patient.nutrition = req.body.nutrition_id;*/
-
-    patientmodel.findByIdAndUpdate(
+    usermodel.findByIdAndUpdate(
         req.params.id,
         req.body,
         {new: true},
@@ -78,57 +80,26 @@ router.put('/add/:id',function (req,res) {
     )
 
 
-    //patient.doctorsAllowed = req.body.doctor_id;  // valeur "doctorsAllowed" loula hethika mta3 il model la deuxiéme "doctor_id" fil postman fil body mta3 l'ajout
-
-    // patient.save().then(patient => res.json(patient));
-
-    //patientmodel.insertMany([patient]);
-    //usermodel.insert(user); hethi ma5ir tableau
-
-    // res.redirect('/patients');
 });
-
 
 
 //************** Mise a jour Patient*************
-router.get('/toupdate/:id', (req,res)=> {
-    let query = {"_id":req.params.id};
-    patientmodel.findById(query,(err,data)=>{
-        if(err){
+router.get('/toupdate/:id', (req, res) => {
+    let query = {"_id": req.params.id};
+    patientmodel.findById(query, (err, data) => {
+        if (err) {
             console.log(err);
             return;
-        }else{
-            res.render('edit',{patient_selected:data});
+        } else {
+            res.render('edit', {patient_selected: data});
         }
     })
 });
 
-router.put('/update/:id',(req,res)=>{
+router.put('/update/:id', (req, res) => {
 
-    /*let patient = {};
-    let query = {"_id": req.params.id}; // req.params.id t7ot il valuer milfou9 fil path bi slach /id
-    patient.firstName = req.body.firstName;// req.body.firstName t7ot il valuer fil postamn fil body bi json
-    patient.lastName = req.body.lastName;
-    patient.birthDate = req.body.birthDate;
-    patient.email = req.body.email;
-    patient.password = req.body.password;
-    patient.city = req.body.city;
-    patient.telNum = req.body.telNum;
-    patient.country = req.body.country;
-    patient.address = req.body.address;
-    patient.sex = req.body.sex;
 
-    patientmodel.update(query,patient,(err)=>{
-        if(err){
-            console.log(err);
-            return;
-        }else{
-            //res.redirect('/')
-        }
-    })
-});*/
-
-    patientmodel.findByIdAndUpdate(
+    usermodel.findByIdAndUpdate(
         req.params.id,
         req.body,
         {new: true},
@@ -140,7 +111,7 @@ router.put('/update/:id',(req,res)=>{
 });
 
 //************** Add request_access*************
-router.post('/add_request_access',function (req,res) {
+router.post('/add_request_access', function (req, res) {
 
     let request_access = new request_accessmodel();
 
@@ -151,66 +122,45 @@ router.post('/add_request_access',function (req,res) {
 
     request_access.save().then(request_access => res.json(request_access));
 
-    //request_accessmodel.insertMany([request_access]);
-    //usermodel.insert(user); hethi ma5ir tableau
 
-    //res.redirect('/');
 });
 
 //************** Process request_access*************
-router.post('/process_request_access/:id',(req,res)=>{
+router.post('/process_request_access/:id', (req, res) => {
     let request_access = {};
     let query = {"_id": req.params.id}; // req.params.id t7ot il valuer milfou9 fil path bi slach /id
-    request_access.State = req.body.State;// req.body.State t7ot il valuer fil postamn fil body bi json
 
     request_accessmodel.findByIdAndUpdate(
         req.params.id,
         req.body,
         {new: true},
-        (err, req) => {
+        (err, data) => {
             if (err) return res.status(500).send(err);
-            return res.send(req);
-        }
-    )
+
+            if (data.State === true) {
+
+                let access = new accessmodel();
+
+                access.user = data.requester;
+                access.patient = data.patient;  // valeur "patient" loula hethika mta3 il model la deuxiéme "patient_id" fil postman fil body mta3 l'ajout
+                access.State = true;
+
+                access.save().then(access => res.json(access));
 
 
-    /*request_accessmodel.update(query,request_access,(err)=>{
-        if(err){
-            console.log(err);
-            return;
-        }else{
-            //res.redirect('/')
-        }
-    })*/
+            }
 
-    request_accessmodel.findById(query,(err,data)=>{
-        if(data.State == true){
+            return res.send(data);
 
-            let access = new accessmodel();
-
-            access.user = data.requester;
-            access.patient = data.patient;  // valeur "patient" loula hethika mta3 il model la deuxiéme "patient_id" fil postman fil body mta3 l'ajout
-            access.State = true;
-
-            access.save().then(access => res.json(access));
-
-            //accessmodel.insertMany([access]);
 
         }
-
-        if(err){
-            console.log(err);
-            return;
-        }else{
-            res.render('edit',{user_selected:data});
-        }
-    })
+    );
 
 
 });
 
 //************** Add access*************
-router.post('/add_access',function (req,res) {
+router.post('/add_access', function (req, res) {
 
     let access = new accessmodel();
 
@@ -221,15 +171,12 @@ router.post('/add_access',function (req,res) {
 
     access.save().then(access => res.json(access));
 
-    //accessmodel.insertMany([access]);
-    //usermodel.insert(user); hethi ma5ir tableau
 
-    //res.redirect('/');
 });
 
 
 //************** cancel access*************
-router.put('/cancel_access/:id',(req,res)=>{
+router.put('/cancel_access/:id', (req, res) => {
     let access = {};
     let query = {"_id": req.params.id}; // req.params.id t7ot il valuer milfou9 fil path bi slach /id
     access.State = false;// req.body.State t7ot il valuer fil postamn fil body bi json
@@ -246,16 +193,8 @@ router.put('/cancel_access/:id',(req,res)=>{
 });
 
 
+//**************Find user by firstName or companyName ***********
 
-//**************Find user by firstName or companyName *************
-//router.get('/getUserByfirstName', (req, res) => {
-
-/*patientmodel.find({country: req.query.country}) //  il valeur louwel "firstName" hathika mta3 il model user et la deuxiéme
-// "firstName" hathika ili t7otha fil path => req.query.id t7ot il valuer milfou9 fil ?adresse= bi slach /id
-    .exec((err, data) => {
-        if (err) res.send(err);
-        else res.send(data)
-    });*/
 
 router.get('/getUserByfirstName', (req, res) => {
     //const userRegex = new RegExp(req.params.name, 'i');
@@ -263,7 +202,7 @@ router.get('/getUserByfirstName', (req, res) => {
     if (req.query.name) {
         query = {
             $or: [{
-                firstName: {$regex: req.query.name, $options: 'i'}
+                firstName: {$regex: req.query.name, $options: 'i'} // hethi fazet like fil sql %LIKE%
             }, {
                 lastName: {$regex: req.query.name, $options: 'i'}
             }]
@@ -275,7 +214,7 @@ router.get('/getUserByfirstName', (req, res) => {
         }
     }
 
-    patientmodel.find(query)
+    usermodel.find(query && {role: "Doctor"} || {role: "SIMPLE_USER"})
         .then(data => res.json(data))
         .catch((err) => {
             console.log(err);
@@ -286,74 +225,74 @@ router.get('/getUserByfirstName', (req, res) => {
 //});
 
 /* GET request_access listing. */
-router.get('/request_access', function(req, res, next) {
+router.get('/request_access', function (req, res, next) {
 
     request_accessmodel.find({})
-        .then((data)=>{
+        .then((data) => {
             res.status(200);
             res.json(data);
 
         })
-        .catch((err)=>{
+        .catch((err) => {
             res.json(err);
         })
 });
 
 /* GET access listing. */
-router.get('/access', function(req, res, next) {
+router.get('/access', function (req, res, next) {
 
     accessmodel.find({})
-        .then((data)=>{
+        .then((data) => {
             res.status(200);
             res.json(data);
 
         })
-        .catch((err)=>{
+        .catch((err) => {
             res.json(err);
         })
 });
 
 
-//************** body mass index *************
-router.get('/body_mass_index/:id',(req,res)=>{
+//************** body mass index ***********
+router.get('/body_mass_index/:id', (req, res) => {
     let patient = {};
     let query = {"_id": req.params.id}; // req.params.id t7ot il valuer milfou9 fil path bi slach /id
 
-    patientmodel.findById(query,(err,data)=>{
+    usermodel.findById(query, (err, data) => {
         let IMC = data.weight / (data.height * data.height);
 
         console.log(IMC);
-        if(IMC<16.5)  {
+        if (IMC < 16.5) {
             if (err) return res.status(500).send(err);
             return res.send("Your body is undernutrition");
         }
 
-        if(IMC > 16.5 && IMC < 18.5)  {
+        if (IMC > 16.5 && IMC < 18.5) {
             if (err) return res.status(500).send(err);
             return res.send("Your body is thinness");
         }
 
-        if(IMC > 18.5 && IMC <25)  {
+        if (IMC > 18.5 && IMC < 25) {
             if (err) return res.status(500).send(err);
             return res.send("Your body is normal");
         }
 
-        if(IMC > 25 && IMC <30)  {
+        if (IMC > 25 && IMC < 30) {
             if (err) return res.status(500).send(err);
             return res.send("Your body is overweight");
         }
 
-        if(IMC > 30 && IMC <35)  {
+        if (IMC > 30 && IMC < 35) {
             if (err) return res.status(500).send(err);
             return res.send("Your body is Moderate obesity");
         }
 
-        if(IMC > 35 && IMC <40)  {
+        if (IMC > 35 && IMC < 40) {
             if (err) return res.status(500).send(err);
             return res.send("Your body is Severe obesity");
         }
 
-        if(IMC>40)  {
+        if (IMC > 40) {
             if (err) return res.status(500).send(err);
             return res.send("Your body is Morbid or massive obesity");
         }
@@ -361,7 +300,6 @@ router.get('/body_mass_index/:id',(req,res)=>{
     })
 
 });
-
 
 
 module.exports = router;
