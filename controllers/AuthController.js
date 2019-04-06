@@ -7,7 +7,7 @@ const crypto = require("crypto");
 const { deleteFileFromPublicImages } = require("../helpers/DeleteFiles");
 
 const signInController = async (req, res) => {
-  const user = await UserModel.findOne({ email: req.body.email }).exec();
+  let user = await UserModel.findOne({ email: req.body.email }).exec();
   if (user === null) {
     return res
       .status(400)
@@ -32,18 +32,31 @@ const signInController = async (req, res) => {
     });
   }
 
+  user.isLoggedIn = true;
   const token = user.generateAuthToken();
-
+  user = await user.save();
   return res.status(200).send({
     token: token,
     user: {
+      isLoggedIn: user.isLoggedIn,
       firstName: user.firstName,
       lastName: user.lastName,
       phoneNumber: user.phoneNumber,
       role: user.role,
       email: user.email,
       sexe: user.sexe,
-      image: user.image
+      image: user.image,
+      id: user._id
+    }
+  });
+};
+
+const signOutController = async (req, res) => {
+  req.user.isLoggedIn = false;
+  await req.user.save();
+  return res.send({
+    success: {
+      global: "sign out"
     }
   });
 };
@@ -160,5 +173,6 @@ module.exports = {
   signUpController,
   accountActivationController,
   sendAccountActivationEmailController,
-  changeProfileImage
+  changeProfileImage,
+  signOutController
 };

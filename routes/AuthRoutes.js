@@ -4,6 +4,7 @@ const AuthValidators = require("../middlewaresAndValidators/AuthValidators");
 const AuthController = require("../controllers/AuthController");
 const UploadFileMiddleWares = require("../middlewaresAndValidators/UploadFileMiddleWares");
 const UploadFileValidators = require("../middlewaresAndValidators/UploadFileValidators");
+const UsersController = require("../controllers/UsersController");
 
 router.post(
   "/SignIn",
@@ -15,6 +16,18 @@ router.post(
   "/SignUp",
   AuthValidators.signUpValidator,
   AuthController.signUpController
+);
+
+router.put(
+  "/SignOut",
+  AuthMiddleWares.authentication,
+  AuthController.signOutController
+);
+
+router.get(
+  "/getConnectedUsers",
+  AuthMiddleWares.authentication,
+  UsersController.getConnectedUsers
 );
 
 router.put(
