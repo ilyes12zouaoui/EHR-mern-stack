@@ -12,7 +12,7 @@ import SignUpPage from "./pages/SignUpPage";
 import AccountActivationPage from "./pages/AccountActivationPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileUpdateImage from "./pages/ProfileUpdateImage";
-import DoctorSpacePage from "./pages/DoctorSpacePage";
+import DoctorSpacePage2 from "./pages/DoctorSpacePage2";
 import ListUsers from "./pages/ListUsers";
 import Personalinformation from "./pages/Personalinformation";
 import RegisterAsPatient from "./pages/RegisterAsPatient";
@@ -102,7 +102,7 @@ class AppRouter extends Component {
                         />
                         <Route exact path="/signUp" component={SignUpPage}/>
                         <Route exact path="/DoctorSpace"
-                               component={() => <DoctorSpacePage user={this.state.user}/>}/>
+                               component={() => <DoctorSpacePage2 user={this.state.user}/>}/>
 
 
                         <Route exact path="/ListUsers"

@@ -86,7 +86,7 @@ class Header extends Component {
                               activeClassName="active-link"
                               exact={true}
                           >
-                              Doctor Space
+                              List Patients
                           </NavLink>
                       </li>
                           : null }

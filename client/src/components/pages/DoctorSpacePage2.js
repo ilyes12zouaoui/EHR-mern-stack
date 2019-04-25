@@ -5,7 +5,7 @@ import Patient from "./Patient";
 import Notif from "./Notif";
 import {NotificationContainer} from "react-notifications";
 
-class DoctorSpacePage extends Component {
+class DoctorSpacePage2 extends Component {
 
     state = {
         patient: [],
@@ -213,4 +213,4 @@ class DoctorSpacePage extends Component {
     }
 }
 
-export default DoctorSpacePage;
+export default DoctorSpacePage2;

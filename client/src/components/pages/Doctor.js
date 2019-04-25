@@ -3,7 +3,7 @@ import {NavLink} from "react-router-dom";
 import axios from "axios";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
-import DoctorSpacePage from "./DoctorSpacePage";
+import DoctorSpacePage2 from "./DoctorSpacePage2";
 
 
 
