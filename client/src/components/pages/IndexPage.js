@@ -1,38 +1,34 @@
 import React, { Component } from "react";
-import axios from "axios";
+import socketIOClient from "socket.io-client";
+import beep from "../assets/welcome.mp3";
 
 class IndexPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      response: "",
     };
-    this.instance = React.createRef();
-    this.instance2 = React.createRef();
   }
-
+  
   componentDidMount() {
+    const socket = socketIOClient("http://localhost:5000", { transports: ['websocket'] });
+    socket.on("FromAPI", data => {
+      const { token, user } = data;
+      this.props.loginMethod(user.role, user, token);
+      new Audio(beep).play();
+      this.props.history.push("/");    
+      console.log('response:', data);
 
-    const s = document.createElement("script");
-    s.type = "text/javascript";
-    s.async = true;
-    s.src = "templeteAssets/js/modernizr.js";
-    this.instance2.appendChild(s);
-
-    const s2 = document.createElement("script");
-    s2.type = "text/javascript";
-    s2.async = true;
-    s2.src = "templeteAssets/js/video_header.js";
-    this.instance.appendChild(s2);
+    });
   }
+
   render() {
     return (
       <React.Fragment>
-        <div ref={el => (this.instance2 = el)} />
-        <div class="header-video">
+        <div className="header-video">
           <div id="hero_video">
-            <div class="content">
-              <h3>Welcome to our website <br/>healChain ! </h3><br/>
+            <div className="content">
+              <h3>Use your RFID to connect to <br/>healthChain ! </h3><br/>
               <p>
                   You can access to your medical record, share it with<br/>
                   health care providers, and give them permission<br/> to add
@@ -42,9 +38,8 @@ class IndexPage extends Component {
             </div>
           </div>
           <img
-            src="img/video_fix.png"
             alt=""
-            class="header-video--media"
+            className="header-video--media"
             data-video-src="video/intro"
             data-teaser-source="video/intro"
             data-provider=""
@@ -53,8 +48,8 @@ class IndexPage extends Component {
           />
         </div>
 
-        <div class="container margin_120_95">
-          <div class="main_title">
+        <div className="container margin_120_95">
+          <div className="main_title">
             <h2>
               Discover the <strong>online</strong> appointment!
             </h2>
@@ -64,9 +59,9 @@ class IndexPage extends Component {
               mel.
             </p>
           </div>
-          <div class="row add_bottom_30">
-            <div class="col-lg-4">
-              <div class="box_feat" id="icon_1">
+          <div className="row add_bottom_30">
+            <div className="col-lg-4">
+              <div className="box_feat" id="icon_1">
                 <span />
                 <h3>Find a Doctor</h3>
                 <p>
@@ -75,8 +70,8 @@ class IndexPage extends Component {
                 </p>
               </div>
             </div>
-            <div class="col-lg-4">
-              <div class="box_feat" id="icon_2">
+            <div className="col-lg-4">
+              <div className="box_feat" id="icon_2">
                 <span />
                 <h3>View profile</h3>
                 <p>
@@ -85,8 +80,8 @@ class IndexPage extends Component {
                 </p>
               </div>
             </div>
-            <div class="col-lg-4">
-              <div class="box_feat" id="icon_3">
+            <div className="col-lg-4">
+              <div className="box_feat" id="icon_3">
                 <h3>Book a visit</h3>
                 <p>
                   Usu habeo equidem sanctus no. Suas summo id sed, erat erant
@@ -95,13 +90,13 @@ class IndexPage extends Component {
               </div>
             </div>
           </div>
-          <p class="text-center">
-            <a href="list.html" class="btn_1 medium">
+          <p className="text-center">
+            <a href="list.html" className="btn_1 medium">
               Find Doctor
             </a>
           </p>
         </div>
-        <div ref={el => (this.instance = el)} />
+        <div  />
       </React.Fragment>
     );
   }

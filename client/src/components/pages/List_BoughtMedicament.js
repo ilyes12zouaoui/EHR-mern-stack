@@ -1,212 +1,171 @@
-import React, {Component} from 'react';
+import React, {Component} from "react";
 import axios from "axios";
-import moment from "moment";
 
-class List_BoughtMedicament extends Component {
+class ListBoughtMedicament extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      boughtMedicaments: [],
+      patient: {},
+      thirdparty: {},
+    };
+  }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            boughtMedicament: {},
-            patient: {},
-            thirdparty: {},
-            medicament: {},
-            firstName: "",
-            lastName: "",
-            birthDate:"",
-            city: "",
-            country: "",
-            address:"",
-            telNum: "",
-            blood_type: "",
-            height:"",
-            weight: "",
+  onInputChange = (e) => {
+    this.setState({[e.target.name]: e.target.value});
+  }
 
-        };
-        this.onInputChange = this.onInputChange.bind(this);
-        this.onFormSubmit = this.onFormSubmit.bind(this);
-    }
+  onFormSubmit = (e) => {}
+  onClick = () => {
+    this.props.history.push("/sell");
+  }
 
-    onInputChange(e) {
-        // console.log({ [e.target.name]: e.target.value });
-        //console.log(e.currentTarget);
-        this.setState({ [e.target.name]: e.target.value });
-    }
-
-    onFormSubmit(e) {
-        window.location.reload();
-
+  componentDidMount() {
+    axios
+      .get("http://localhost:5000/api/PharmacistANDThirdParty/boughtMedicaments")
+      .then(response => {
+        this.setState({boughtMedicaments: response.data});
+        console.log(this.state.boughtMedicaments);
+      })
+      .catch(error => {
+        const {errors} = error.response.data;
+        console.log(errors);
+        this.setState({errors: errors});
+      });
+  }
+  
+  
+      onClickSetRefundable = (id) => {
         axios
-            .put("http://localhost:5000/api/patient/add/"+this.props.user.id, {
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                birthDate: this.state.birthDate,
-                city: this.state.city,
-                country: this.state.country,
-                address: this.state.address,
-                telNum: this.state.telNum,
-                blood_type: this.state.blood_type,
-                height: this.state.height,
-                weight: this.state.weight
-            })
-            .then(response => {
-                this.setState({ success: response.data.success, errors: {} });
-            })
-            .catch(error => {
-                const { errors } = error.response.data;
-                this.setState({ errors: errors, success: {} });
-            });
-    }
+        .put("http://localhost:5000/api/PharmacistANDThirdParty/approve_refund/"+id)
+        .then(response => {
+          const bt = this.state.boughtMedicaments.map((bm) => {
+            if (bm.medicament._id === response.data._id) {
+              bm.medicament = response.data;
+              return bm;
+            } else {
+              return bm;
+            }
+          });
+          this.setState({ boughtMedicaments: bt });
+      }).catch(error => {
+        const {errors} = error.response.data;
+        this.setState({errors: errors});
+      });
+      }
 
-    componentDidMount() {
-        axios
-            .get('http://localhost:5000/api/PharmacistANDThirdParty/boughtMedicaments_By_Pharmacist_id/'+this.props.user.id)
-            .then(response => {
-                this.setState({boughtMedicament: response.data[0]});
-                console.log(this.state.boughtMedicament);
-            })
-            .catch(error => {
-                const {errors} = error.response.data;
-                console.log(errors);
-                this.setState({errors: errors});
-            });
-
-        axios
-            .get('http://localhost:5000/api/PharmacistANDThirdParty/patient_by_boughtMedicaments_By_Pharmacist_id/'+this.props.user.id)
-            .then(response => {
-                this.setState({patient: response.data});
-                console.log(this.state.patient);
-            })
-            .catch(error => {
-                const {errors} = error.response.data;
-                console.log(errors);
-                this.setState({errors: errors});
-            });
-
-        axios
-            .get('http://localhost:5000/api/PharmacistANDThirdParty/thirdparty_by_boughtMedicaments_By_Pharmacist_id/'+this.props.user.id)
-            .then(response => {
-                this.setState({thirdparty: response.data});
-                console.log(this.state.thirdparty);
-            })
-            .catch(error => {
-                const {errors} = error.response.data;
-                console.log(errors);
-                this.setState({errors: errors});
-            });
-
-        axios
-            .get('http://localhost:5000/api/PharmacistANDThirdParty/medicament_by_boughtMedicaments_By_Pharmacist_id/'+this.props.user.id)
-            .then(response => {
-                this.setState({medicament: response.data});
-                console.log(this.state.medicament);
-            })
-            .catch(error => {
-                const {errors} = error.response.data;
-                console.log(errors);
-                this.setState({errors: errors});
-            });
+  onClickRefund = (id) => {
+    axios
+    .put("http://localhost:5000/api/PharmacistANDThirdParty/refund_boughtMedicament/"+id)
+      .then(response => {
+        const bt = this.state.boughtMedicaments.map((bm) => {
+          if (bm._id === response.data._id) {
+            bm = response.data;
+            return bm;
+          } else {
+            return bm;
+          }
+        });
+        this.setState({ boughtMedicaments: bt });
+    }).catch(error => {
+      const {errors} = error.response.data;
+      this.setState({errors: errors});
+    });
+  };
 
 
-    }
 
 
-    render() {
-        let {boughtMedicament} = this.state;
-        let {patient} = this.state;
-        let {thirdparty} = this.state;
-        let {medicament} = this.state;
+  render() {
+    const setrefundBtn = (id)=>(
+      <button style={{ backgroundColor: "#3f4079", marginLeft: "10px", color: "white" }} onClick={()=>this.onClickSetRefundable(id)} className="btn" >Set Refundable</button>
+    );
 
-        function _calculateAge(birthday) {
-            // birthday is a date
-            let ageDifMs = Date.now() - birthday.getTime();
-            let ageDate = new Date(ageDifMs); // miliseconds from epoch
-            return Math.abs(ageDate.getUTCFullYear() - 1970);
-        }
+    const refundBtn = (id)=>(
+      <button style={{ backgroundColor: "#e74e84", marginLeft: "10px", color: "white" }} onClick={()=>this.onClickRefund(id)} className="btn" >Refund</button>    );
 
-        return (
+    const med = (medicament,index) => (
+      <div key={index} className="strip_list wow fadeIn">
+      <figure>
+          <img
+            src="http://via.placeholder.com/565x565.jpg"
+            alt=""
+          />
+      </figure>
+      <h3>{medicament.medicament.name}</h3>
+      <p>{medicament.medicament.description}</p>
+      <span> {medicament.medicament.price} DT</span>
+      {!medicament.medicament.isRefundable ? setrefundBtn(medicament.medicament._id) : refundBtn(medicament._id)}
+    </div>
+    )
 
-            <React.Fragment>
-                <div id="results">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-md-6">
-                                <h4><strong>Showing 10</strong> of 140 results</h4>
-                            </div>
-                            <div className="col-md-6">
-                                <div className="search_bar_list">
-                                    <input type="text" className="form-control"
-                                           placeholder="Ex. Name, Price, Description..."/>
-                                    <input type="submit" value="Search"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    return (
+      <React.Fragment>
+        <div id="results">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-6">
+                <h4>
+                  <strong>All medicaments available</strong>
+                </h4>
+              </div>
+              <div className="col-md-6">
+                <div className="search_bar_list">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Ex. Name, Price, Description..."
+                  />
+                  <input type="submit" value="Search" />
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                <div className="filters_listing">
-                    <div className="container">
-                        <ul className="clearfix">
-                            <li>
-                                <h6>Type</h6>
-                                <div className="switch-field">
-                                    <input type="radio" id="all" name="type_patient" value="all" checked/>
-                                    <label htmlFor="all">bought Medicaments</label>
-                                </div>
-                            </li>
-
-                        </ul>
-                    </div>
+        <div className="filters_listing">
+          <div className="container">
+            <ul className="clearfix">
+              <li>
+                <div className="switch-field">
+                  <label htmlFor="all">bought Medicaments</label>
                 </div>
+              </li>
+            </ul>
+          </div>
+        </div>
 
-                <div className="container margin_60_35">
-                    <div className="row">
-                        <div className="col-lg-7">
-
-                            <div className="strip_list wow fadeIn">
-                                <a href="#0" className="wish_bt"></a>
-                                <figure>
-                                    <a href="detail-page.html"><img src="http://via.placeholder.com/565x565.jpg" alt=""/></a>
-                                </figure>
-
-                                <h3> Patient : {patient.firstName}  {patient.lastName}</h3><br/>
-                                <h3> Thirdparty : {thirdparty.comapanyName} </h3><br/>
-                                <h3> Medicament : {medicament.name} </h3><br/>
-                                <p> TransactionDate :  {moment(boughtMedicament.transactionDate).format('YYYY-MM-DD')}</p>
-                                <a href="badges.html" data-toggle="tooltip" data-placement="top"
-                                   data-original-title="Badge Level" className="badge_list_1"><img
-                                    src="img/badges/badge_1.svg" width="15" height="15" alt=""/></a>
-                                <ul>
-                                    <li ><a href="#0" onClick="onHtmlClick('Doctors', 0)" className="btn_listing">
-                                    </a></li>
-                                    <li></li>
-                                    <li><a href="detail-page.html">Update</a></li>
-                                </ul>
-                            </div>
-
-
-
-                            <nav aria-label="" className="add_top_20">
-                                <ul className="pagination pagination-sm">
-                                    <li className="page-item disabled">
-                                        <a className="page-link" href="#" tabIndex="-1">Previous</a>
-                                    </li>
-                                    <li className="page-item active"><a className="page-link" href="#">1</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="#">Next</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-
-
-                    </div>
-                </div>
-            </React.Fragment>
-        );
-    }
+        <div className="container margin_60_35">
+          <div className="row">
+            <div className="col-lg-7">
+              {this.state.boughtMedicaments.map((medicament, index) =>
+                 !medicament.isRefunded ? med(medicament,index) : null
+              )}
+            </div>
+          </div>
+        </div>
+        <h1>Refunded</h1>
+        <div className="container margin_60_35">
+          <div className="row">
+            <div className="col-lg-7">
+              {this.state.boughtMedicaments.map((medicament, index) =>
+                medicament.isRefunded ?
+                <div key={index} className="strip_list wow fadeIn">
+                 <figure>
+           
+                 </figure>
+                 <h3>{medicament.medicament.name}</h3>
+                 <p>{medicament.medicament.description}</p>
+                    <span> {medicament.medicament.price} DT</span>
+                    <button style={{ backgroundColor: "grey", marginLeft: "10px", color: "white" }} className="btn" disabled={true}>Refunded</button>    
+               </div> : null
+              )}
+            </div>
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  }
 }
 
-export default List_BoughtMedicament;
+export default ListBoughtMedicament;
