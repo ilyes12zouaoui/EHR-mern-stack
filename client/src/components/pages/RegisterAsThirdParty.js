@@ -12,37 +12,29 @@ class RegisterAsThirdParty extends Component {
             city: "",
             country: "",
             address:"",
-            telNum: "",
-
-
         };
-        this.onInputChange = this.onInputChange.bind(this);
-        this.onFormSubmit = this.onFormSubmit.bind(this);
     }
 
-    onInputChange(e) {
-        // console.log({ [e.target.name]: e.target.value });
-        //console.log(e.currentTarget);
+    onInputChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    onFormSubmit(e) {
-        window.location.reload();
+    onFormSubmit = (e) => {
+        e.preventDefault();
 
         axios
             .put("http://localhost:5000/api/PharmacistANDThirdParty/add_thirdparty/"+this.props.user.id, {
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                birthDate: this.state.birthDate,
                 city: this.state.city,
                 country: this.state.country,
                 address: this.state.address,
                 telNum: this.state.telNum,
                 comapanyName: this.state.comapanyName,
                 category: this.state.category,
+                role:"ThirdParty"
             })
             .then(response => {
                 this.setState({ success: response.data.success, errors: {} });
+
             })
             .catch(error => {
                 const { errors } = error.response.data;
@@ -50,31 +42,10 @@ class RegisterAsThirdParty extends Component {
             });
     }
 
-    componentDidMount() {
-        axios
-            .get('http://localhost:5000/api/patient/getuserById/'+this.props.user.id)
-            .then(response => {
-                this.setState({thirdparty: response.data});
-                console.log(this.state.thirdparty);
-            })
-            .catch(error => {
-                const {errors} = error.response.data;
-                console.log(errors);
-                this.setState({errors: errors});
-            });
-    }
 
 
     render() {
         let {thirdparty} = this.state;
-
-        function _calculateAge(birthday) {
-            // birthday is a date
-            let ageDifMs = Date.now() - birthday.getTime();
-            let ageDate = new Date(ageDifMs); // miliseconds from epoch
-            return Math.abs(ageDate.getUTCFullYear() - 1970);
-        }
-
         return (
             <div id="hero_register">
                 <div className="container margin_120_95">
@@ -113,7 +84,7 @@ class RegisterAsThirdParty extends Component {
                                                 <input type="text" className="form-control" placeholder="Comapany Name"
                                                        name="comapanyName"
                                                        value={this.state.comapanyName}
-                                                       onChange={this.onInputChange} value={thirdparty.comapanyName}/>
+                                                       onChange={this.onInputChange} />
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
@@ -121,7 +92,7 @@ class RegisterAsThirdParty extends Component {
                                                 <input type="text" className="form-control" placeholder="category"
                                                        name="category"
                                                        value={this.state.category}
-                                                       onChange={this.onInputChange} value={thirdparty.category}/>
+                                                       onChange={this.onInputChange} />
                                             </div>
                                         </div>
                                     </div>
@@ -140,7 +111,7 @@ class RegisterAsThirdParty extends Component {
                                                 <input type="text" className="form-control" placeholder="City"
                                                        name="city"
                                                        value={this.state.city}
-                                                       onChange={this.onInputChange} value={thirdparty.city}/>
+                                                       onChange={this.onInputChange} />
                                             </div>
                                         </div>
                                     </div>
@@ -150,7 +121,7 @@ class RegisterAsThirdParty extends Component {
                                                 <input type="text" className="form-control" placeholder="Address"
                                                        name="address"
                                                        value={this.state.address}
-                                                       onChange={this.onInputChange} value={thirdparty.address}/>
+                                                       onChange={this.onInputChange} />
                                             </div>
                                         </div>
                                     </div>
@@ -160,7 +131,7 @@ class RegisterAsThirdParty extends Component {
                                                 <input type="text" className="form-control" placeholder="Mobile Phone"
                                                        name="telNum"
                                                        value={this.state.telNum}
-                                                       onChange={this.onInputChange} value={"+216 "+thirdparty.telNum}/>
+                                                       onChange={this.onInputChange} />
                                             </div>
                                         </div>
 
