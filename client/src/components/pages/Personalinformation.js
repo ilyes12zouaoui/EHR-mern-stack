@@ -1,154 +1,320 @@
 import React, {Component} from 'react';
 import axios from "axios";
+import {NotificationManager} from "react-notifications";
 
 class Personalinformation extends Component {
-    /*constructor(props) {
+
+    constructor(props) {
         super(props);
         this.state = {
-            user: {}
+            user: {},
+            physical_activity: {},
+            nutrition: {},
+            firstName: "",
+            lastName: "",
+            birthDate:"",
+            city: "",
+            country: "",
+            address:"",
+            telNum: "",
+            blood_type: "",
+            height:"",
+            weight: "",
+
         };
+        this.onInputChange = this.onInputChange.bind(this);
+        this.onFormSubmit = this.onFormSubmit.bind(this);
+    }
+
+    onInputChange(e) {
+        // console.log({ [e.target.name]: e.target.value });
+        //console.log(e.currentTarget);
+        this.setState({ [e.target.name]: e.target.value });
+    }
+
+    onFormSubmit(e) {
+        window.location.reload();
+
+        axios
+            .put("http://localhost:5000/api/patient/add/"+this.props.user.id, {
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                birthDate: this.state.birthDate,
+                city: this.state.city,
+                country: this.state.country,
+                address: this.state.address,
+                telNum: this.state.telNum,
+                blood_type: this.state.blood_type,
+                height: this.state.height,
+                weight: this.state.weight
+            })
+            .then(response => {
+                this.setState({ success: response.data.success, errors: {} });
+            })
+            .catch(error => {
+                const { errors } = error.response.data;
+                this.setState({ errors: errors, success: {} });
+            });
     }
 
     componentDidMount() {
         axios
-            .get('api/patient?id=5ca64b274f9ea339a8502b2a')
+            .get('http://localhost:5000/api/patient/getuserById/'+this.props.user.id)
             .then(response => {
-                this.setState({patient: response.data[0]});
-                console.log(this.state.patient);
+                this.setState({user: response.data});
+                console.log(this.state.user);
             })
             .catch(error => {
                 const {errors} = error.response.data;
                 console.log(errors);
                 this.setState({errors: errors});
             });
-    }*/
 
-    constructor(props) {
-        super(props);
-        this.state = {};
+        axios
+    .get('http://localhost:5000/api/patient/physical_activity_By_User/'+this.props.user.id)
+            .then(response => {
+                this.setState({physical_activity: response.data});
+                console.log(this.state.physical_activity);
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                console.log(errors);
+                this.setState({errors: errors});
+            });
+
+        axios
+            .get('http://localhost:5000/api/patient/nutrition_By_User/'+this.props.user.id)
+            .then(response => {
+                this.setState({nutrition: response.data});
+                console.log(this.state.nutrition);
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                console.log(errors);
+                this.setState({errors: errors});
+            });
     }
 
 
+    update = () => {
+
+        this.props.history.push("/UpdateHealthInfoamtions");
+
+    };
+
+
     render() {
+        let {user} = this.state;
+        let {physical_activity} = this.state;
+        let {nutrition} = this.state;
+
+        function _calculateAge(birthday) {
+            // birthday is a date
+            let ageDifMs = Date.now() - birthday.getTime();
+            let ageDate = new Date(ageDifMs); // miliseconds from epoch
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        }
+
         return (
-            <div id="hero_register">
-                <div className="container margin_120_95">
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <h1>It's time to be with us !</h1>
-                            <p className="lead">Te pri adhuc simul. No eros errem mea. Diam mandamus has ad. Invenire
-                                senserit ad has, has ei quis iudico, ad mei nonumes periculis.</p>
-                            <div className="box_feat_2">
-                                <i className="pe-7s-map-2"></i>
-                                <h3>Let patients to Find you!</h3>
-                                <p>Ut nam graece accumsan cotidieque. Has voluptua vivendum accusamus cu. Ut per
-                                    assueverit temporibus dissentiet.</p>
+
+            <React.Fragment>
+            <div id="breadcrumb">
+                <div className="container">
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Category</a></li>
+                        <li>Personal information</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div className="container margin_60">
+                <div className="row">
+                    <div className="col-xl-8 col-lg-8">
+                        <div className="box_general_3 cart">
+                            <div className="form_title">
+                                <h3><strong>1</strong>Your Details</h3>
+
                             </div>
-                            <div className="box_feat_2">
-                                <i className="pe-7s-date"></i>
-                                <h3>Easly manage Bookings</h3>
-                                <p>Has voluptua vivendum accusamus cu. Ut per assueverit temporibus dissentiet. Eum no
-                                    atqui putant democritum, velit nusquam sententiae vis no.</p>
+                            <div className="step">
+                                <div className="row">
+                                    <div className="col-md-6 col-sm-6">
+                                        <div className="form-group">
+                                            <label>First name</label>
+                                            <input type="text" className="form-control" id="firstName"
+                                                   name="firstName" placeholder="first Name" value={this.props.user.firstName} />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 col-sm-6">
+                                        <div className="form-group">
+                                            <label>Last name</label>
+                                            <input type="text" className="form-control" id="lastName"
+                                                   name="lastName" placeholder="last Name" value={this.props.user.lastName}/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 col-sm-6">
+                                        <div className="form-group">
+                                            <label>Email</label>
+                                            <input type="email" id="email" name="email"
+                                                   className="form-control" placeholder="E-mail" value={this.props.user.email}/>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 col-sm-6">
+                                        <div className="form-group">
+                                            <label>Birth Date</label>
+                                            <input type="text" id="birthDate" name="birthDate"
+                                                   className="form-control" placeholder="Birth Date" value={_calculateAge(new Date(user.birthDate))+" years"}/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 col-sm-6">
+                                        <div className="form-group">
+                                            <label>Telephone</label>
+                                            <input type="text" id="telNum" name="telNum"
+                                                   className="form-control" placeholder="Phone Number" value={user.telNum}/>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 col-sm-6">
+                                        <div className="form-group">
+                                            <label>CIN</label>
+                                            <input type="text" id="cin" name="cin"
+                                                   className="form-control" placeholder="CIN" value={user.cin}/>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                </div>
+
+                            <hr/>
+
+                            <div className="form_title">
+                                <h3><strong>2</strong>Billing Address</h3>
+
                             </div>
-                            <div className="box_feat_2">
-                                <i className="pe-7s-phone"></i>
-                                <h3>Instantly via Mobile</h3>
-                                <p>Eos eu epicuri eleifend suavitate, te primis placerat suavitate his. Nam ut dico
-                                    intellegat reprehendunt, everti audiam diceret in pri, id has clita consequat
-                                    suscipiantur.</p>
+                            <div className="step">
+                                <div className="row">
+                                    <div className="col-md-6 col-sm-6">
+                                        <div className="form-group">
+                                            <label>Country</label>
+                                            <input type="text" id="country" name="country"
+                                                   className="form-control" placeholder="Country" value={user.country}/>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6 col-sm-6">
+                                        <div className="form-group">
+                                            <label>Address</label>
+                                            <input type="text" id="address" name="address"
+                                                   className="form-control" placeholder="Address" value={user.address}/>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 col-sm-6">
+                                        <div className="form-group">
+                                            <label>City</label>
+                                            <input type="text" id="city" name="city"
+                                                   className="form-control" placeholder="City" value={user.city}/>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
-                        </div>
-                        <div className="col-lg-5 ml-auto">
-                            <div className="box_form">
-                                <div id="message-register"></div>
-                                <form method="post" action="assets/register_doctor.php" id="register_doctor">
+
+                            {this.props.user.role == 'Doctor'?
+                            <div>
+                                <hr/>
+
+                                <div className="form_title">
+                                    <h3><strong>3</strong>Doctor information</h3>
+
+                                </div>
+                                <div className="step">
                                     <div className="row">
-                                        <div className="col-md-6 ">
+                                        <div className="col-md-6 col-sm-6">
                                             <div className="form-group">
-                                                <input type="text" className="form-control" placeholder="Name"
-                                                       name="name_register" id="name_register" value={this.props.user.firstName}/>
+                                                <label>Specialty</label>
+                                                <input type="text" id="specialty" name="specialty"
+                                                       className="form-control" placeholder="Specialty" value={user.specialty}/>
                                             </div>
                                         </div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-6 col-sm-6">
                                             <div className="form-group">
-                                                <input type="text" className="form-control" placeholder="Last Name"
-                                                       name="lastname_register" id="lastname_register" value={this.props.user.lastName}/>
+                                                <label>Description</label>
+                                                <input type="text" id="description" name="description"
+                                                       className="form-control" placeholder="Description" value={user.description}/>
                                             </div>
                                         </div>
+
                                     </div>
-                                    <div className="row">
-                                        <div className="col-lg-12">
-                                            <div className="form-group">
-                                                <input type="text" className="form-control" placeholder="birthDate"
-                                                       name="specialization" id="specialization" value={this.props.user.birthDate}/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <input type="text" className="form-control" placeholder="City"
-                                                       name="city_register" id="city_register"/>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <select className="form-control" name="country_register"
-                                                        id="country_register">
-                                                    <option value="">Country</option>
-                                                    <option value="Europe">Europe</option>
-                                                    <option value="Asia">Asia</option>
-                                                    <option value="Unated States">Unated States</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-lg-12">
-                                            <div className="form-group">
-                                                <input type="text" className="form-control" placeholder="Address"
-                                                       name="address_register" id="address_register"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <input type="text" className="form-control" placeholder="Mobile Phone"
-                                                       name="mobile_register" id="mobile_register"/>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <input type="text" className="form-control" placeholder="blood_type"
-                                                       name="office_phone_register" id="office_phone_register"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-lg-12">
-                                            <div className="form-group">
-                                                <input type="email" className="form-control" placeholder="height"
-                                                       name="email_register" id="email_register"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <div className="form-group">
-                                                <input type="text" id="verify_register" className="form-control"
-                                                       placeholder="weight"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div><input type="submit" className="btn_1" value="Submit" id="submit-register"/>
-                                    </div>
-                                </form>
+
+
+                                </div>
                             </div>
+                                : null }
+
+                            {this.props.user.role == 'Patient'?
+                          <div>
+                            <hr/>
+
+                                    <div className="form_title">
+                                        <h3><strong>3</strong>Health information</h3>
+
+                                    </div>
+                                    <div className="step">
+                                        <div className="row">
+                                            <div className="col-md-6 col-sm-6">
+                                                <div className="form-group">
+                                                    <label>Blood type</label>
+                                                    <input type="text" id="blood_type" name="blood_type"
+                                                           className="form-control" placeholder="Blood type" value={"Blood " +user.blood_type}/>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6 col-sm-6">
+                                                <div className="form-group">
+                                                    <label>Height</label>
+                                                    <input type="text" id="height" name="height"
+                                                           className="form-control" placeholder="Height" value={user.height +" metre"}/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-md-6 col-sm-6">
+                                                <div className="form-group">
+                                                    <label>Weight</label>
+                                                    <input type="text" id="weight" name="weight"
+                                                           className="form-control" placeholder="Weight" value={user.weight +" Kg"}/>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6 col-sm-6">
+                                                <div className="form-group">
+                                                    <label>physical_activityy</label>
+                                                    <input type="text" id="physical_activityy" name="physical_activityy"
+                                                           className="form-control" placeholder="physical_activityy" value={user.physical_activityy}/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                            <hr/>
+
+
+                          </div>
+                            : null }
+
+
+                            <a onClick={() => this.update()}  className="btn_1 medium">  Update</a>
                         </div>
                     </div>
                 </div>
             </div>
+            </React.Fragment>
         );
     }
 }
