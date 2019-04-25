@@ -18,8 +18,6 @@ class SignInPage extends Component {
   }
 
   onInputChange(e) {
-    // console.log({ [e.target.name]: e.target.value });
-    //console.log(e.currentTarget);
     this.setState({ [e.target.name]: e.target.value });
   }
 
@@ -35,7 +33,6 @@ class SignInPage extends Component {
         const { token, user } = response.data;
         this.props.loginMethod(user.role, user, token);
         this.props.history.push("/");
-        // this.setState({ errors: {} });
       })
       .catch(error => {
         const { errors } = error.response.data;
