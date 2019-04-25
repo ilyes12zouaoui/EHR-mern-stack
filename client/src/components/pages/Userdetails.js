@@ -1,7 +1,100 @@
 import React, {Component} from 'react';
+import axios from "axios";
+import {NotificationContainer, NotificationManager} from "react-notifications";
 
 class Userdetails extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            doctor: {},
+            user: {},
+            visible:true,
+            sender: "",
+            receiver: "",
+            message:"",
+            Checked:""
+        };
+    }
+
+    componentDidMount() {
+        axios
+            .get('http://localhost:5000/api/patient/getuserById/'+this.props.match.params.iddoc)
+            .then(response => {
+                this.setState({doctor: response.data});
+                console.log(this.state.doctor);
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                console.log(errors);
+                this.setState({errors: errors});
+            });
+
+        axios
+            .get('http://localhost:5000/api/patient/list_Access_By_Patient_id_And_Doc_Id/'+this.props.match.params.iduser+'/'+this.props.match.params.iddoc)
+            .then((res) => {
+                this.setState({visible : res.data});
+            })
+    }
+
+    authorize = () => {
+
+        axios
+            .put('http://localhost:5000/api/patient/give_access/'+this.props.match.params.iddoc)
+            .then((res) => {
+
+                this.setState({visible : res.data.State});
+                NotificationManager.info('Authorization added');
+            })
+
+        axios
+            .post('http://localhost:5000/api/patient/add_notification',{
+                sender: this.props.match.params.iduser,
+                receiver: this.props.match.params.iddoc,
+                message:"Authorization added",
+                Checked: false,
+            })
+            .then((res) => {
+
+            })
+
+
+
+    }
+
+    unauthorize = () => {
+        axios
+            .put('http://localhost:5000/api/patient/cancel_access/'+this.props.match.params.iddoc)
+            .then((res) => {
+                this.setState({visible : res.data.State});
+                NotificationManager.info('UnAuthorization added');
+            })
+
+        axios
+            .post('http://localhost:5000/api/patient/add_notification',{
+                sender: this.props.match.params.iduser,
+                receiver: this.props.match.params.iddoc,
+                message:"Authorization Canceled",
+                Checked: false,
+            })
+            .then((res) => {
+
+            })
+
+
+    }
+
     render() {
+        let {doctor} = this.state;
+
+
+        const buttonAuth = (
+            <a onClick={this.authorize} className="btn_1 medium"> Authorize</a>
+        );
+
+        const buttonUnAuth =(
+            < a onClick = {this.unauthorize} className = "btn_1 medium" > UnAuthorize </a>
+        );
+
         return (
             <React.Fragment>
             <div id="breadcrumb">
@@ -19,10 +112,10 @@ class Userdetails extends Component {
                 <aside className="col-xl-3 col-lg-4" id="sidebar">
                     <div className="box_profile">
                         <figure>
-                            <img src="images/doctor.jpg" alt="" className="img-fluid"/>
+                            <img src="/images/doctor.jpg" alt="" className="img-fluid"/>
                         </figure>
-                        <small>Primary care - Internist</small>
-                        <h1>DR. Julia Jhones</h1>
+                        <small>{doctor.specialty}</small>
+                        <h1>DR. {doctor.firstName} {doctor.lastName}</h1>
                         <span className="rating">
 							<i className="icon_star voted"></i>
 							<i className="icon_star voted"></i>
@@ -39,8 +132,8 @@ class Userdetails extends Component {
                             <li>124 Patients</li>
                         </ul>
                         <ul className="contacts">
-                            <li><h6>Address</h6>859 60th, Brooklyn, NY, 11220</li>
-                            <li><h6>Phone</h6><a href="tel://000434323342">+00043 4323342</a></li>
+                            <li><h6>Address</h6>{doctor.address}</li>
+                            <li><h6>Phone</h6><a href="tel://000434323342">+216 {doctor.telNum}</a></li>
                         </ul>
                     </div>
 
@@ -66,9 +159,7 @@ class Userdetails extends Component {
                             <div className="tab-pane fade show active" id="general" role="tabpanel"
                                  aria-labelledby="general-tab">
 
-                                <p className="lead add_bottom_30">Sed pretium, ligula sollicitudin laoreet viverra,
-                                    tortor libero sodales leo, eget blandit nunc tortor eu nibh. Lorem ipsum dolor sit
-                                    amet, consectetuer adipiscing elit.</p>
+
                                 <div className="indent_title_in">
                                     <i className="pe-7s-user"></i>
                                     <h3>Professional statement</h3>
@@ -172,9 +263,9 @@ class Userdetails extends Component {
                                             </table>
                                         </div>
                                         <hr/>
-                                            <div className="text-center"><a href="booking-page.html"
-                                                                            className="btn_1 medium">Authorize</a></div>
+                                            <div className="text-center">{ this.state.visible ? buttonUnAuth : buttonAuth }</div>
                             </div>
+                            <NotificationContainer/>
 
                             <div className="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                 <div className="reviews-container">

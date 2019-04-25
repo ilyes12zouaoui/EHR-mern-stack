@@ -1,8 +1,78 @@
 import React, {Component} from 'react';
 import {NavLink} from "react-router-dom";
+import axios from "axios";
+import Doctor from "./Doctor";
 
 class ListUsers extends Component {
+
+    state = {
+        doctor: [],
+        search:"",
+    };
+
+    onInputChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+
+        axios
+            .get("http://localhost:5000/api/patient/getUserByfirstName?name=" + e.target.value)
+            .then(response => {
+                this.setState({doctor: response.data});
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                console.log(errors);
+                this.setState({errors: errors});
+            });
+    };
+
+
+    componentDidMount() {
+
+            axios
+                .get("http://localhost:5000/api/patient/getUserByfirstName?name=" + this.state.search)
+               // .get('http://localhost:5000/api/patient/doctors')
+                .then(response => {
+
+                    this.setState({doctor: response.data});
+                    console.log(this.state.doctor);
+                })
+                .catch(error => {
+                    const {errors} = error.response.data;
+                    console.log(errors);
+                    this.setState({errors: errors});
+                });
+
+    }
+
+    /*onFormSubmit = (e) => {
+        e.preventDefault();
+
+            axios
+                .get("http://localhost:5000/api/patient/getUserByfirstName?name=" + this.state.search)
+                .then(response => {
+                    this.setState({doctor: response.data});
+                })
+                .catch(error => {
+                    const {errors} = error.response.data;
+                    console.log(errors);
+                    this.setState({errors: errors});
+                });
+
+
+    };
+*/
+
+
+    Search = (val) =>{
+
+
+    }
+
     render() {
+        let doctor = this.state.doctor;
+
+
+
         return (
             <React.Fragment>
                 <div id="results">
@@ -12,11 +82,15 @@ class ListUsers extends Component {
                                 <h4><strong>Showing 10</strong> of 140 results</h4>
                             </div>
                             <div className="col-md-6">
+                                <form  onSubmit={this.onFormSubmit}>
                                 <div className="search_bar_list">
                                     <input type="text" className="form-control"
-                                           placeholder="Ex. Specialist, Name, Doctor..."/>
-                                    <input type="submit" value="Search"/>
+                                           placeholder="Ex. Specialist, Name, Doctor..." name="search"
+                                           onChange={this.onInputChange} value={this.state.search}
+                                    />
+
                                 </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -60,45 +134,36 @@ class ListUsers extends Component {
                 <div className="container margin_60_35">
                     <div className="row">
                         <div className="col-lg-8">
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <div className="box_list wow fadeIn">
-                                        <a href="#0" className="wish_bt"></a>
-                                        <figure>
-                                            <NavLink
-                                                to="/userdetails"
-                                                activeClassName="active-link"
-                                                exact={true}
-                                            ><img src="images/doctor.jpg"
-                                                                            className="img-fluid" alt=""/>
-                                                <div className="preview"><span>Read more</span></div>
-                                            </NavLink>
-                                        </figure>
-                                        <div className="wrapper">
-                                            <small>Psicologist</small>
-                                            <h3>Dr. Sickman</h3>
 
-                                            <p>Id placerat tacimates definitionem sea, prima quidam vim no. Duo nobis
-                                                persecuti
-                                                cuodo....</p>
-                                            <span className="rating"><i className="icon_star voted"></i><i
-                                                className="icon_star voted"></i><i className="icon_star voted"></i><i
-                                                className="icon_star"></i><i className="icon_star"></i> <small>(145)</small></span>
-                                            <a href="badges.html" data-toggle="tooltip" data-placement="top"
-                                               data-original-title="Badge Level" className="badge_list_1"><img
-                                                src="img/badges/badge_1.svg" width="15" height="15" alt=""/></a>
-                                        </div>
-                                        <ul>
-                                            <li hi><a href="#0" onClick="onHtmlClick('Doctors', 0)"></a></li>
-                                            <li><a
-                                                href="https://www.google.com/maps/dir//Assistance+%E2%80%93+H%C3%B4pitaux+De+Paris,+3+Avenue+Victoria,+75004+Paris,+Francia/@48.8606548,2.3348734,14z/data=!4m15!1m6!3m5!1s0x0:0xa6a9af76b1e2d899!2sAssistance+%E2%80%93+H%C3%B4pitaux+De+Paris!8m2!3d48.8568376!4d2.3504305!4m7!1m0!1m5!1m1!1s0x47e67031f8c20147:0xa6a9af76b1e2d899!2m2!1d2.3504327!2d48.8568361"
-                                                target="_blank"><i className="icon_pin_alt"></i>Directions</a></li>
-                                            <li><a href="detail-page.html">Authorize</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
+
+                            {this.state.doctor != null?
+                            <div className="row">
+
+                                {this.state.doctor.map((doc, index) => (
+                                    <Doctor key={index}{...this.props} doc={doc}/>
+                                ))}
+
+
+
 
                             </div>
+                            :null }
+
+
+                            {this.state.doctorr != null?
+                                <div className="row">
+
+                                    {this.state.doctorr.map((doc, index) => (
+                                        <Doctor key={index}{...this.props} doc={doc}/>
+                                    ))}
+
+
+
+
+                                </div>
+                                :null }
+
+
 
                             <nav aria-label="" className="add_top_20">
                                 <ul className="pagination pagination-sm">
@@ -120,9 +185,9 @@ class ListUsers extends Component {
 
                 </div>
             </React.Fragment>
-    )
-    ;
+        )
+            ;
     }
-    }
+}
 
-    export default ListUsers;
+export default ListUsers;
