@@ -1,14 +1,18 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 class IndexPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+
+    };
     this.instance = React.createRef();
     this.instance2 = React.createRef();
   }
 
   componentDidMount() {
+
     const s = document.createElement("script");
     s.type = "text/javascript";
     s.async = true;

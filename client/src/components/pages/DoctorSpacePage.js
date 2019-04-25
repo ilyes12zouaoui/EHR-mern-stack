@@ -1,164 +1,216 @@
-import React, { Component } from "react";
-import "../assets/css/doctorSpacePage.css";
+import React, {Component} from 'react';
+import {NavLink} from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
+import Patient from "./Patient";
+import Notif from "./Notif";
+import {NotificationContainer} from "react-notifications";
 
 class DoctorSpacePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      patient: {}
+
+    state = {
+        patient: [],
+        search:"",
+        notif:[]
     };
-  }
 
-  componentDidMount() {
-    axios
+    onInputChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
 
-      .get("api/patient/byid?id=5ca669748fe074320cb5330c")
-      .then(response => {
-        this.setState({ patient: response.data });
-        console.log(this.state.patient);
-      })
-      .catch(error => {
-        const { errors } = error.response.data;
-        console.log(errors);
-        this.setState({ errors: errors });
-      });
-  }
+        axios
+            .get("http://localhost:5000/api/patient/getPatientByfirstName?name=" + e.target.value)
+            .then(response => {
+                this.setState({patient: response.data});
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                console.log(errors);
+                this.setState({errors: errors});
+            });
+    };
 
-  render() {
-    let { patient } = this.state;
 
-    function _calculateAge(birthday) {
-      // birthday is a date
-      let ageDifMs = Date.now() - birthday.getTime();
-      let ageDate = new Date(ageDifMs); // miliseconds from epoch
-      return Math.abs(ageDate.getUTCFullYear() - 1970);
+    componentDidMount() {
+
+        axios
+            .get('http://localhost:5000/api/patient/get_Notification_By_Id/' + this.props.user.id)
+            .then(response => {
+                this.setState({notif: response.data});
+
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                this.setState({errors: errors});
+            });
+
+
+
+        axios
+            .get("http://localhost:5000/api/patient/getPatientByfirstName?name=" + this.state.search)
+            // .get('http://localhost:5000/api/patient/doctors')
+            .then(response => {
+
+                this.setState({patient: response.data});
+                console.log(this.state.patient);
+            })
+            .catch(error => {
+                const {errors} = error.response.data;
+                console.log(errors);
+                this.setState({errors: errors});
+            });
+
     }
 
-    console.log("allergy" + patient.allergies);
-    return (
-      <div
-        className="margin_60"
-        style={{ paddingLeft: "80px", paddingRight: "80px" }}
-      >
-        <div className="row">
-          <div className="col-xl-12 col-lg-12 patientDetails box_general_3">
-            <div className="title">
-              <h3>Patient details</h3>
-            </div>
-            <p>
-              <b>Name : </b>
-              {patient.firstName + " " + patient.lastName} &emsp;&emsp;
-              <b>Day of birth : </b>{" "}
-              {moment(patient.birthDate).format("YYYY-MM-DD")} &emsp;&emsp;
-              <b>Age : </b> {_calculateAge(new Date(patient.birthDate))}{" "}
-              &emsp;&emsp;
-              <b>Allergies : </b> {patient.allergies} &emsp;&emsp;
-              <b>Address : </b> El Ghazala &emsp;&emsp;
-              <b>NHS : </b> 214 856 7201 &emsp;&emsp;
-              <b>Live consultation : </b>
-              <i id="video-call" className="icon-videocam" />
-            </p>
-          </div>
-        </div>
+    /*onFormSubmit = (e) => {
+        e.preventDefault();
 
-        <div className="row">
-          <div className="col-xl-3 col-lg-3 patientDetails box_general_3">
-            <span>
-              <img
-                src={"images/" + patient.image}
-                alt=""
-                width="150"
-                height="150"
-                className="img-thumbnail"
-              />
-            </span>
-            <br />
-            <br />
-            <div className="form-group">
-              <textarea
-                className="form-control rounded-0"
-                rows="10"
-                placeholder="Your message ..."
-              />
-            </div>
-            <div className="form-group float-right">
-              <button className="btn btn-success">Send</button>
-            </div>
-          </div>
+            axios
+                .get("http://localhost:5000/api/patient/getUserByfirstName?name=" + this.state.search)
+                .then(response => {
+                    this.setState({doctor: response.data});
+                })
+                .catch(error => {
+                    const {errors} = error.response.data;
+                    console.log(errors);
+                    this.setState({errors: errors});
+                });
 
-          <div className="col-xl-3 col-lg-3 offset-1 patientDetails box_general_3">
-            <h6 className="text-center">FURTHER PATIENT DETAILS</h6>
-            <ul className="list-group">
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                All
-                <span className="badge badge-primary badge-pill">11</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                Alerts
-                <span className="badge badge-primary badge-pill">2</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                Allergies
-                <span className="badge badge-primary badge-pill">1</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                Clinical documents
-                <span className="badge badge-primary badge-pill">3</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                Hospital/Clinic attended
-                <span className="badge badge-primary badge-pill">4</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                Results
-                <span className="badge badge-primary badge-pill">1</span>
-              </li>
-            </ul>
-            <br />
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Filter"
-                style={{ border: "2px solid #000000" }}
-              />
-            </div>
-            <ul className="list-group">
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                2019
-                <span className="badge badge-primary badge-pill">5</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                2018
-                <span className="badge badge-primary badge-pill">2</span>
-              </li>
-            </ul>
-          </div>
 
-          <div className="col-xl-4 col-lg-4 offset-1 patientDetails box_general_3">
-            <h6 className="text-center">05/02/2019 Cardiology clinic letter</h6>
-            <br />
-            <br />
-            <p className="text-center">
-              {" "}
-              Usu habeo equidem sanctus no. Suas summo id sed, erat erant
-              oporteat cu pri. In eum omnes molestie Usu habeo equidem sanctus
-              no. Suas summo id sed, erat erant oporteat cu pri. In eum omnes
-              molestie Usu habeo equidem sanctus no. Suas summo id sed, erat
-              erant oporteat cu pri. In eum omnes molestie Usu habeo equidem
-              sanctus no. Suas summo id sed, erat erant oporteat cu pri. In eum
-              omnes molestie Usu habeo equidem sanctus no. Suas summo id sed,
-              erat erant oporteat cu pri. In eum omnes molestie Usu habeo
-              equidem sanctus no. Suas summo id sed, erat erant oporteat cu pri.
-              In eum omnes molestie
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    };
+*/
+
+
+    Search = (val) =>{
+
+
+    }
+
+    render() {
+        let patient = this.state.patient;
+        let notif = this.state.notif;
+
+
+        return (
+            <React.Fragment>
+                <div id="results">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-6">
+                                <h4><strong>Showing 10</strong> of 140 results</h4>
+                            </div>
+                            <div className="col-md-6">
+                                <form  onSubmit={this.onFormSubmit}>
+                                    <div className="search_bar_list">
+                                        <input type="text" className="form-control"
+                                               placeholder="Ex. Specialist, Name, Patient..." name="search"
+                                               onChange={this.onInputChange} value={this.state.search}
+                                        />
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="filters_listing">
+                    <div className="container">
+                        <ul className="clearfix">
+                            <li>
+                                <h6>Type</h6>
+                                <div className="switch-field">
+                                    <input type="radio" id="all" name="type_patient" value="all" checked/>
+                                    <label htmlFor="all">All</label>
+                                    <input type="radio" id="doctors" name="type_patient" value="doctors"/>
+                                    <label htmlFor="doctors">Patients</label>
+                                    <input type="radio" id="clinics" name="type_patient" value="clinics"/>
+                                    <label htmlFor="clinics">Clinics</label>
+                                </div>
+                            </li>
+                            <li>
+                                <h6>Layout</h6>
+                                <div className="layout_view">
+                                    <a href="#0" className="active"><i className="icon-th"></i></a>
+                                    <a href="list.html"><i className="icon-th-list"></i></a>
+                                    <a href="list-map.html"><i className="icon-map-1"></i></a>
+                                </div>
+                            </li>
+                            <li>
+                                <h6>Sort by</h6>
+                                <select name="orderby" className="selectbox">
+                                    <option value="Closest">Closest</option>
+                                    <option value="Best rated">Best rated</option>
+                                    <option value="Men">Men</option>
+                                    <option value="Women">Women</option>
+                                </select>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="container margin_60_35">
+                    <div className="row">
+                        <div className="col-lg-8">
+
+
+                            {this.state.patient != null?
+                                <div className="row">
+
+                                    {this.state.patient.map((doc, index) => (
+                                        <Patient key={index}{...this.props} doc={doc}/>
+                                    ))}
+
+
+
+
+                                </div>
+                                :null }
+
+
+                            {this.state.doctorr != null?
+                                <div className="row">
+
+                                    {this.state.doctorr.map((doc, index) => (
+                                        <Patient key={index}{...this.props} doc={doc}/>
+                                    ))}
+
+
+
+
+                                </div>
+                                :null }
+
+
+
+                            <nav aria-label="" className="add_top_20">
+                                <ul className="pagination pagination-sm">
+                                    <li className="page-item disabled">
+                                        <a className="page-link" href="#" tabIndex="-1">Previous</a>
+                                    </li>
+                                    <li className="page-item active"><a className="page-link" href="#">1</a></li>
+                                    <li className="page-item"><a className="page-link" href="#">2</a></li>
+                                    <li className="page-item"><a className="page-link" href="#">3</a></li>
+                                    <li className="page-item">
+                                        <a className="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+
+                        {this.state.notif.map((notif, index) => (
+
+                            <Notif key={index}{...this.props} notif={notif}/>
+
+                        ))}
+                    </div>
+
+
+
+                </div>
+
+            </React.Fragment>
+        )
+            ;
+    }
 }
 
 export default DoctorSpacePage;
