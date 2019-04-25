@@ -26,6 +26,7 @@ import List_access from "./pages/List_access";
 import Recom_Predict from "./pages/Recom_Predict";
 import UpdateHealthInfoamtions from "./pages/HealthInformations";
 import PatientDetails from "./pages/PatientDetails";
+import SellMeds from "./pages/SellMedicament";
 
 
 function checkIfUserConnectedAndReturnUser() {
@@ -109,10 +110,10 @@ class AppRouter extends Component {
                                component={() => <ListUsers user={this.state.user}/>}/>
 
 
-                        <Route exact path="/List_Medicaments" component={ListMedicament}/>
+                        <Route exact path="/List_Medicaments" component={List_Medicaments}/>
                         <Route exact path="/List_BoughtMedicament"
                                render={({match, history, location}) => (
-                                   <ListBoughtMedicament history={history} loginMethod={this.loginMethod}/>
+                                   <List_BoughtMedicament history={history} loginMethod={this.loginMethod}/>
                                )}/>
                         <Route exact path="/sell/:id"
                                render={({match, history, location}) => (
