@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {BrowserRouter, Route, NavLink, Switch} from "react-router-dom";
+import React, { Component } from "react";
+import { BrowserRouter, Route, NavLink, Switch } from "react-router-dom";
 import axios from "axios";
 
 import ProtectedRoute from "./commun/ProtectedRoute";
@@ -27,161 +27,219 @@ import Recom_Predict from "./pages/Recom_Predict";
 import UpdateHealthInfoamtions from "./pages/HealthInformations";
 import PatientDetails from "./pages/PatientDetails";
 import SellMeds from "./pages/SellMedicament";
-
-
+import ChatPage from "./pages/ChatPage";
 function checkIfUserConnectedAndReturnUser() {
-    let user = {
-        isAuthenticated: false,
-        role: "",
-        user: {}
+  let user = {
+    isAuthenticated: false,
+    role: "",
+    user: {}
+  };
+
+  if (localStorage.Authorization && localStorage.user) {
+    user = {
+      isAuthenticated: true,
+      role: JSON.parse(localStorage.user).role,
+      user: JSON.parse(localStorage.user)
     };
+    axios.defaults.headers.common["Authorization"] = localStorage.Authorization;
+  }
 
-    if (localStorage.Authorization && localStorage.user) {
-        user = {
-            isAuthenticated: true,
-            role: JSON.parse(localStorage.user).role,
-            user: JSON.parse(localStorage.user)
-        };
-        axios.defaults.headers.common["Authorization"] = localStorage.Authorization;
-    }
-
-    return user;
+  return user;
 }
 
 class AppRouter extends Component {
-    constructor(props) {
-        super(props);
-        this.state = checkIfUserConnectedAndReturnUser();
+  constructor(props) {
+    super(props);
+    this.state = checkIfUserConnectedAndReturnUser();
 
-        this.loginMethod = this.loginMethod.bind(this);
-        this.logoutMethod = this.logoutMethod.bind(this);
-        this.updateUserAfterImageChangeMethod = this.updateUserAfterImageChangeMethod.bind(
-            this
-        );
+    this.loginMethod = this.loginMethod.bind(this);
+    this.logoutMethod = this.logoutMethod.bind(this);
+    this.updateUserAfterImageChangeMethod = this.updateUserAfterImageChangeMethod.bind(
+      this
+    );
+  }
+
+  loginMethod(role, user, token) {
+    localStorage.setItem("Authorization", `JWT ${token}`);
+    localStorage.setItem("user", JSON.stringify(user));
+    axios.defaults.headers.common["Authorization"] = `JWT ${token}`;
+    this.setState({ role, user, isAuthenticated: true });
+  }
+
+  updateUserAfterImageChangeMethod(imageName) {
+    if (localStorage.user) {
+      let user = JSON.parse(localStorage.user);
+      user.image = imageName;
+      localStorage.setItem("user", JSON.stringify(user));
+      this.setState({ user });
     }
+  }
 
-    loginMethod(role, user, token) {
-        localStorage.setItem("Authorization", `JWT ${token}`);
-        localStorage.setItem("user", JSON.stringify(user));
-        axios.defaults.headers.common["Authorization"] = `JWT ${token}`;
-        this.setState({role, user, isAuthenticated: true});
-    }
+  logoutMethod() {
+    delete axios.defaults.headers.common["Authorization"];
+    localStorage.removeItem("Authorization");
+    localStorage.removeItem("user");
+    this.setState({ role: "", user: {}, isAuthenticated: false });
+  }
 
-    updateUserAfterImageChangeMethod(imageName) {
-        if (localStorage.user) {
-            let user = JSON.parse(localStorage.user);
-            user.image = imageName;
-            localStorage.setItem("user", JSON.stringify(user));
-            this.setState({user});
-        }
-    }
+  render() {
+    return (
+      <BrowserRouter>
+        <Header
+          logoutMethod={this.logoutMethod}
+          isAuthenticated={this.state.isAuthenticated}
+          user={this.state.user}
+        />
+        <main>
+          <Switch>
+            <Route path="/" component={IndexPage} exact={true} />
+            <Route
+              exact
+              path="/signIn"
+              render={({ match, history, location }) => (
+                <SignInPage history={history} loginMethod={this.loginMethod} />
+              )}
+            />
+            <Route exact path="/signUp" component={SignUpPage} />
+            <Route
+              exact
+              path="/DoctorSpace"
+              component={() => <DoctorSpacePage2 user={this.state.user} />}
+            />
 
-    logoutMethod() {
-        delete axios.defaults.headers.common["Authorization"];
-        localStorage.removeItem("Authorization");
-        localStorage.removeItem("user");
-        this.setState({role: "", user: {}, isAuthenticated: false});
-    }
+            <Route
+              exact
+              path="/ListUsers"
+              component={() => <ListUsers user={this.state.user} />}
+            />
 
-    render() {
-        return (
-            <BrowserRouter>
-                <Header
-                    logoutMethod={this.logoutMethod}
-                    isAuthenticated={this.state.isAuthenticated}
-                    user={this.state.user}
+            <Route
+              exact
+              path="/List_Medicaments"
+              component={List_Medicaments}
+            />
+            <Route
+              exact
+              path="/List_BoughtMedicament"
+              render={({ match, history, location }) => (
+                <List_BoughtMedicament
+                  history={history}
+                  loginMethod={this.loginMethod}
                 />
-                <main>
-                    <Switch>
-                        <Route path="/" component={IndexPage} exact={true}/>
-                        <Route
-                            exact
-                            path="/signIn"
-                            render={({match, history, location}) => (
-                                <SignInPage history={history} loginMethod={this.loginMethod}/>
-                            )}
-                        />
-                        <Route exact path="/signUp" component={SignUpPage}/>
-                        <Route exact path="/DoctorSpace"
-                               component={() => <DoctorSpacePage2 user={this.state.user}/>}/>
+              )}
+            />
+            <Route
+              exact
+              path="/sell/:id"
+              render={({ match, history, location }) => (
+                <SellMeds
+                  history={history}
+                  match={match}
+                  user={this.state.user}
+                />
+              )}
+            />
 
+            <Route
+              exact
+              path="/List_access"
+              component={() => <List_access user={this.state.user} />}
+            />
 
-                        <Route exact path="/ListUsers"
-                               component={() => <ListUsers user={this.state.user}/>}/>
+            <Route
+              exact
+              path="/personalinformation"
+              render={({ match, history, location }) => (
+                <Personalinformation history={history} user={this.state.user} />
+              )}
+            />
 
+            <Route
+              exact
+              path="/UpdateHealthInfoamtions"
+              render={({ match, history, location }) => (
+                <UpdateHealthInfoamtions
+                  history={history}
+                  user={this.state.user}
+                />
+              )}
+            />
 
-                        <Route exact path="/List_Medicaments" component={List_Medicaments}/>
-                        <Route exact path="/List_BoughtMedicament"
-                               render={({match, history, location}) => (
-                                   <List_BoughtMedicament history={history} loginMethod={this.loginMethod}/>
-                               )}/>
-                        <Route exact path="/sell/:id"
-                               render={({match, history, location}) => (
-                                   <SellMeds history={history} match={match} user={this.state.user}/>
-                               )}/>
+            <Route
+              exact
+              path="/RegisterAsPatient"
+              render={({ match, history, location }) => (
+                <RegisterAsPatient history={history} user={this.state.user} />
+              )}
+            />
 
-                        <Route exact path="/List_access"
-                               component={() => <List_access user={this.state.user}/>}/>
+            <Route
+              exact
+              path="/RegisterAsDoctor"
+              component={() => <RegisterAsDoctor user={this.state.user} />}
+            />
 
-                        <Route exact path="/personalinformation"
-                               render={({match, history, location}) => (
-                                   <Personalinformation history={history} user={this.state.user}/>
-                               )}
-                        />
+            <Route
+              exact
+              path="/RegisterAsPharmacist"
+              component={() => <RegisterAsPharmacist user={this.state.user} />}
+            />
 
-                        <Route exact path="/UpdateHealthInfoamtions"
-                               render={({match, history, location}) => (
-                                   <UpdateHealthInfoamtions history={history} user={this.state.user}/>
-                               )}
-                        />
+            <Route
+              exact
+              path="/RegisterAsThirdParty"
+              component={() => <RegisterAsThirdParty user={this.state.user} />}
+            />
 
-                        <Route exact
-                               path="/RegisterAsPatient"
-                               render={({match, history, location}) => (
-                                   <RegisterAsPatient history={history} user={this.state.user}/>
-                               )}
-                        />
+            <Route
+              exact
+              path="/userdetails/:iddoc/:iduser"
+              component={Userdetails}
+            />
 
-                        <Route exact path="/RegisterAsDoctor"
-                               component={() => <RegisterAsDoctor user={this.state.user}/>}/>
+            <Route
+              exact
+              path="/patientdetails/:idpatient"
+              component={PatientDetails}
+            />
 
-                        <Route exact path="/RegisterAsPharmacist"
-                               component={() => <RegisterAsPharmacist user={this.state.user}/>}/>
+            <Route
+              exact
+              path="/recom_predict"
+              component={() => <Recom_Predict user={this.state.user} />}
+            />
 
-                        <Route exact path="/RegisterAsThirdParty"
-                               component={() => <RegisterAsThirdParty user={this.state.user}/>}/>
-
-                        <Route exact path="/userdetails/:iddoc/:iduser" component={Userdetails}/>
-
-                        <Route exact path="/patientdetails/:idpatient" component={PatientDetails}/>
-
-                        <Route exact path="/recom_predict"
-                               component={() => <Recom_Predict user={this.state.user}/>}/>
-
-
-                        <ProtectedRoute
-                            isAuthenticated={this.state.isAuthenticated}
-                            path="/profile"
-                            exact={true}
-                            component={() => <ProfilePage user={this.state.user}/>}
-                        />
-                        <ProtectedRoute
-                            isAuthenticated={this.state.isAuthenticated}
-                            path="/ProfileUpdateImage"
-                            component={() => (
-                                <ProfileUpdateImage
-                                    updateUserAfterImageChangeMethod={
-                                        this.updateUserAfterImageChangeMethod
-                                    }
-                                    user={this.state.user}
-                                />
-                            )}
-                        />
-                        <Route
-                            path="/accountActivation/:id"
-                            component={AccountActivationPage}
-                        />
-                        {/* <ProtectedRoute
+            <ProtectedRoute
+              isAuthenticated={this.state.isAuthenticated}
+              path="/profile"
+              exact={true}
+              component={() => <ProfilePage user={this.state.user} />}
+            />
+            <ProtectedRoute
+              isAuthenticated={this.state.isAuthenticated}
+              path="/Chat"
+              exact={true}
+              component={() => (
+                <ChatPage user={this.state.user} socket={this.state.socket} />
+              )}
+            />
+            <ProtectedRoute
+              isAuthenticated={this.state.isAuthenticated}
+              path="/ProfileUpdateImage"
+              component={() => (
+                <ProfileUpdateImage
+                  updateUserAfterImageChangeMethod={
+                    this.updateUserAfterImageChangeMethod
+                  }
+                  user={this.state.user}
+                />
+              )}
+            />
+            <Route
+              path="/accountActivation/:id"
+              component={AccountActivationPage}
+            />
+            {/* <ProtectedRoute
               isAuthenticated={this.state.isAuthenticated}
               path="/profile"
               component={() => <Profile user={this.state.user} />}
@@ -198,13 +256,13 @@ class AppRouter extends Component {
               )}
             />
             <Route component={NotFoundPage} />*/}
-                        <Route component={NotFoundPage}/>
-                    </Switch>
-                </main>
-                <Footer/>
-            </BrowserRouter>
-        );
-    }
+            <Route component={NotFoundPage} />
+          </Switch>
+        </main>
+        <Footer />
+      </BrowserRouter>
+    );
+  }
 }
 
 export default AppRouter;
