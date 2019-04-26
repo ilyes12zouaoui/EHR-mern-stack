@@ -38,14 +38,21 @@ const server = app.listen(port, () => {
 const io = socket(server);
 
 io.on("connection", socket => {
-  console.log("connected socket ", socket.id);
-  socket.on("send message", message => {
-    io.sockets.emit("send message server", message);
+  socket.on("subscribe", conversationId => {
+    socket.join(conversationId);
   });
-  socket.on("typing", () => {
-    socket.broadcast.emit("typing", null);
+
+  socket.on("unsubscribe", conversationId => {
+    socket.leave(conversationId);
   });
-  socket.on("stop typing", () => {
-    socket.broadcast.emit("stop typing", null);
+
+  //when a user send a message in a discussion
+  socket.on("new-message-from-client", ({ conversationId, message }) => {
+    io.in(conversationId).emit("new-message-from-server", {
+      conversationId,
+      message
+    });
   });
 });
+
+app.set("socketio", io);
