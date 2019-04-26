@@ -32,31 +32,25 @@ class DoctorSpacePage2 extends Component {
     componentDidMount() {
 
         axios
-            .get('http://localhost:5000/api/patient/get_Notification_By_Id/' + this.props.user.id)
+            .get('api/patient/get_Notification_By_Id/' + this.props.user.id)
             .then(response => {
                 this.setState({notif: response.data});
 
-            })
-            .catch(error => {
-                const {errors} = error.response.data;
-                this.setState({errors: errors});
             });
 
 
 
+
+
         axios
-            .get("http://localhost:5000/api/patient/getPatientByfirstName?name=" + this.state.search)
+            .get("api/patient/getPatientByfirstName?name=" + this.state.search)
             // .get('http://localhost:5000/api/patient/doctors')
             .then(response => {
 
                 this.setState({patient: response.data});
                 console.log(this.state.patient);
-            })
-            .catch(error => {
-                const {errors} = error.response.data;
-                console.log(errors);
-                this.setState({errors: errors});
             });
+
 
     }
 

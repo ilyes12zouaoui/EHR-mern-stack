@@ -6,15 +6,13 @@ import 'react-notifications/lib/notifications.css';
 import {Button, Modal} from "react-bootstrap";
 
 
-
-
 class Patient extends Component {
 
 
-    state={
-        notif:[],
-        access:{},
-        etat : Boolean,
+    state = {
+        notif: [],
+        access: {},
+        etat: Boolean,
         show: false
 
     }
@@ -22,7 +20,7 @@ class Patient extends Component {
     componentDidMount() {
 
         axios
-            .get('http://localhost:5000/api/patient/get_Notification_By_Id/'+this.props.user.id)
+            .get('http://localhost:5000/api/patient/get_Notification_By_Id/' + this.props.user.id)
             .then(response => {
                 this.setState({notif: response.data});
 
@@ -35,7 +33,7 @@ class Patient extends Component {
 
 
         axios
-            .get('http://localhost:5000/api/patient/access_By_DocID_And_PatientID/'+this.props.user.id+'/'+this.props.doc._id)
+            .get('http://localhost:5000/api/patient/access_By_DocID_And_PatientID/' + this.props.user.id + '/' + this.props.doc._id)
             .then(response => {
                 this.setState({access: response.data[0]});
 
@@ -43,27 +41,23 @@ class Patient extends Component {
             })
 
 
-
-
     }
 
-    handleClose = () =>{
-        this.setState({ show: false });
+    handleClose = () => {
+        this.setState({show: false});
     }
 
     handleShow() {
-        this.setState({ show: true });
+        this.setState({show: true});
     }
 
     verifiy = () => {
 
         //console.log("modallllllllllllll")
 
-        this.setState({ show: true });
+        this.setState({show: true});
 
     };
-
-
 
 
     render() {
@@ -77,54 +71,50 @@ class Patient extends Component {
                     <a href="#0" className="wish_bt"></a>
                     <figure>
 
-                        {this.state.access && this.state.access.State === true?
+                        {this.state.access && this.state.access.State === true ?
 
                             (<NavLink
-                            to={`/patientdetails/${doc._id}`}
-                            activeClassName="active-link"
-                            exact={true}
-                        ><img src="images/patient.jpg"
-                              className="img-fluid" alt=""/>
-                            <div className="preview"><span>Read more</span></div>
-                        </NavLink>)
-
-                        : (<React.Fragment><NavLink onClick={() => this.verifiy()}><img src="images/patient.jpg"
+                                to={`/patientdetails/${doc._id}`}
+                                activeClassName="active-link"
+                                exact={true}
+                            ><img src="images/patient.jpg"
                                   className="img-fluid" alt=""/>
+                                <div className="preview"><span>Read more</span></div>
+                            </NavLink>)
+
+                            : (<React.Fragment><NavLink onClick={() => this.verifiy()}><img src="images/patient.jpg"
+                                                                                            className="img-fluid"
+                                                                                            alt=""/>
                                     <div className="preview"><span>Read more</span></div>
 
 
-
-
-
                                 </NavLink>
-                                <Modal show={this.state.show} onHide={this.handleClose} {...this.props}
-                            size="lg"
-                            aria-labelledby="contained-modal-title-vcenter"
-                            centered>
-                            <Modal.Header closeButton>
-                            </Modal.Header>
+                                    <Modal show={this.state.show} onHide={this.handleClose} {...this.props}
+                                           size="lg"
+                                           aria-labelledby="contained-modal-title-vcenter"
+                                           centered>
+                                        <Modal.Header closeButton>
+                                        </Modal.Header>
 
 
-
-                            <Modal.Body>
-
-
-                            <h4>You don't have access to {doc.firstName} {doc.lastName}  </h4>
+                                        <Modal.Body>
 
 
-                            </Modal.Body>
+                                            <h4>You don't have access to {doc.firstName} {doc.lastName}  </h4>
 
 
+                                        </Modal.Body>
 
-                            <Modal.Footer>
-                            <Button variant="secondary" onClick={this.handleClose}>
-                            Close
-                            </Button>
 
-                            </Modal.Footer>
-                            </Modal>
+                                        <Modal.Footer>
+                                            <Button variant="secondary" onClick={this.handleClose}>
+                                                Close
+                                            </Button>
+
+                                        </Modal.Footer>
+                                    </Modal>
                                 </React.Fragment>
-                            ) }
+                            )}
 
 
                     </figure>
@@ -153,17 +143,11 @@ class Patient extends Component {
                 </div>
 
 
-
-
-
-
             </div>
 
         );
     }
 }
-
-
 
 
 export default Patient;

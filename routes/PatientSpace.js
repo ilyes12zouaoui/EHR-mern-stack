@@ -469,7 +469,7 @@ router.get('/list_Access_By_Patient_id/:id', (req, res) => {
 
 router.get('/list_Access_By_Patient_id_And_Doc_Id/:id/:idDoc', (req, res) => {
 
-
+console.log(req.params.id,user, req.params.idDoc);
     accessmodel.findOne({patient: req.params.id,user: req.params.idDoc})
         .exec((err, data) => {
             if (!err) {
