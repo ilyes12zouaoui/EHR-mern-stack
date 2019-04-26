@@ -1,0 +1,60 @@
+/*============================================================================================*/
+/* Your custom styles below */
+/*============================================================================================*/
+
+.patientDetails .title {
+    background-color: #3f4079;
+    color: #fff;
+    margin: -30px -30px 30px -30px;
+    padding: 20px 30px;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    -ms-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+}
+
+.patientDetails .title h3 {
+    font-size: 28px;
+    font-size: 1.75rem;
+    margin: 0;
+    color: #fff;
+}
+
+.patientDetails .title small {
+    font-size: 13px;
+    font-size: 0.8125rem;
+}
+
+.patientDetails hr {
+    margin-top: 15px !important;
+}
+
+.patientDetails ul.treatments {
+    margin: 15px 0 0 0;
+}
+
+.patientDetails ul.treatments li {
+    border-top: 1px dotted #ddd;
+    border-bottom: none;
+    width: 100%;
+    margin: 0;
+    padding: 12px 0 5px 0;
+}
+
+.container-custom {
+    width: 100%;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#video-call {
+    font-size: 25px;
+    color: #1e7e34;
+    display: inline-block;
+    border-radius: 50%;
+    box-shadow: 0px 0px 2px #888;
+    padding: 0.5em 0.6em;
+    margin-left: 15px;
+}
